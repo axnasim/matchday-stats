@@ -16,6 +16,8 @@ tags:
     description: Supported league operations
   - name: alerts
     description: Match alert rule operations
+  - name: soccer
+    description: Soccer leagues, teams, players, and statistics
 paths:
   /healthz:
     get:
@@ -137,6 +139,84 @@ paths:
           description: Alert deleted
         "404":
           description: Alert not found
+  /soccer/teams:
+    get:
+      operationId: listSoccerTeams
+      tags: [soccer]
+      summary: List soccer teams
+      parameters:
+        - name: leagueId
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Soccer teams
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SoccerTeam"
+  /soccer/players:
+    get:
+      operationId: listSoccerPlayers
+      tags: [soccer]
+      summary: List soccer players
+      parameters:
+        - name: leagueId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: teamId
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Soccer players
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SoccerPlayer"
+  /soccer/stats:
+    get:
+      operationId: listSoccerStats
+      tags: [soccer]
+      summary: List filterable soccer player statistics
+      parameters:
+        - name: leagueId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: season
+          in: query
+          required: false
+          schema:
+            type: string
+            default: "2026/27"
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [goals, assists, appearances, minutes, rating, cleanSheets, cards]
+            default: goals
+      responses:
+        "200":
+          description: Filterable player stats
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PlayerStat"
 components:
   schemas:
     HealthStatus:
@@ -258,4 +338,85 @@ components:
           items:
             type: string
             enum: [kickoff, goals, final]
+    SoccerTeam:
+      type: object
+      required: [id, name, shortName, leagueId, leagueName, country, position, form]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        shortName:
+          type: string
+        leagueId:
+          type: string
+        leagueName:
+          type: string
+        country:
+          type: string
+        position:
+          type: integer
+        form:
+          type: array
+          items:
+            type: string
+            enum: [W, D, L]
+    SoccerPlayer:
+      type: object
+      required: [id, name, teamId, teamName, leagueId, leagueName, position, appearances, goals, assists, rating]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        teamId:
+          type: string
+        teamName:
+          type: string
+        leagueId:
+          type: string
+        leagueName:
+          type: string
+        position:
+          type: string
+        appearances:
+          type: integer
+        goals:
+          type: integer
+        assists:
+          type: integer
+        rating:
+          type: number
+    PlayerStat:
+      type: object
+      required: [rank, playerId, playerName, teamName, leagueId, leagueName, position, appearances, goals, assists, minutes, cleanSheets, cards, rating]
+      properties:
+        rank:
+          type: integer
+        playerId:
+          type: string
+        playerName:
+          type: string
+        teamName:
+          type: string
+        leagueId:
+          type: string
+        leagueName:
+          type: string
+        position:
+          type: string
+        appearances:
+          type: integer
+        goals:
+          type: integer
+        assists:
+          type: integer
+        minutes:
+          type: integer
+        cleanSheets:
+          type: integer
+        cards:
+          type: integer
+        rating:
+          type: number
 

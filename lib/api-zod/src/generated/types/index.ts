@@ -12,6 +12,7 @@ export * from './alertInput';
 export * from './alertInputAlertTypesItem';
 export * from './healthStatus';
 export * from './league';
+export * from './leagueCategory';
 export * from './listMatchesDateRange';
 export * from './listMatchesParams';
 export * from './listMatchesStatus';

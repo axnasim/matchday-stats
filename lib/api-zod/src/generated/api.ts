@@ -25,7 +25,8 @@ export const ListLeaguesResponseItem = zod.object({
   "name": zod.string(),
   "shortName": zod.string(),
   "country": zod.string(),
-  "accent": zod.string()
+  "accent": zod.string(),
+  "category": zod.enum(['domestic', 'competition'])
 })
 export const ListLeaguesResponse = zod.array(ListLeaguesResponseItem)
 

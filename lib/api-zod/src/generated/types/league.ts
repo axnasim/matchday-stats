@@ -5,6 +5,7 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { LeagueCategory } from './leagueCategory';
 
 export interface League {
   id: string;
@@ -12,4 +13,5 @@ export interface League {
   shortName: string;
   country: string;
   accent: string;
+  category: LeagueCategory;
 }

@@ -9,12 +9,21 @@ export interface HealthStatus {
   status: string;
 }
 
+export type LeagueCategory = typeof LeagueCategory[keyof typeof LeagueCategory];
+
+
+export const LeagueCategory = {
+  domestic: 'domestic',
+  competition: 'competition',
+} as const;
+
 export interface League {
   id: string;
   name: string;
   shortName: string;
   country: string;
   accent: string;
+  category: LeagueCategory;
 }
 
 export interface Team {

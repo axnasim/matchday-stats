@@ -228,7 +228,7 @@ components:
         - status
     League:
       type: object
-      required: [id, name, shortName, country, accent]
+      required: [id, name, shortName, country, accent, category]
       properties:
         id:
           type: string
@@ -240,6 +240,9 @@ components:
           type: string
         accent:
           type: string
+        category:
+          type: string
+          enum: [domestic, competition]
     Team:
       type: object
       required: [name, shortName, initials]

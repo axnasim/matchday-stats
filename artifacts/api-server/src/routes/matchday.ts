@@ -19,18 +19,26 @@ import {
 const router: IRouter = Router();
 
 const leagues = [
-  { id: "premier-league", name: "Premier League", shortName: "PL", country: "England", accent: "#d946ef" },
-  { id: "serie-a", name: "Serie A", shortName: "SA", country: "Italy", accent: "#2563eb" },
-  { id: "bundesliga", name: "Bundesliga", shortName: "BL", country: "Germany", accent: "#ef4444" },
-  { id: "la-liga", name: "La Liga", shortName: "LL", country: "Spain", accent: "#f97316" },
-  { id: "ligue-1", name: "Ligue 1", shortName: "L1", country: "France", accent: "#06b6d4" },
-  { id: "brasileirao", name: "Brasileirão", shortName: "BR", country: "Brazil", accent: "#16a34a" },
-  { id: "liga-portugal", name: "Liga Portugal", shortName: "LP", country: "Portugal", accent: "#0f766e" },
-  { id: "belgian-pro-league", name: "Belgian Pro League", shortName: "BPL", country: "Belgium", accent: "#8b5cf6" },
-  { id: "mls", name: "Major League Soccer", shortName: "MLS", country: "United States", accent: "#0ea5e9" },
-  { id: "saudi-pro-league", name: "Saudi Professional League", shortName: "SPL", country: "Saudi Arabia", accent: "#84cc16" },
-  { id: "j1-league", name: "J1 League", shortName: "J1", country: "Japan", accent: "#dc2626" },
-  { id: "k-league-1", name: "K League 1", shortName: "KL1", country: "South Korea", accent: "#0891b2" },
+  { id: "premier-league", name: "Premier League", shortName: "PL", country: "England", accent: "#d946ef", category: "domestic" },
+  { id: "serie-a", name: "Serie A", shortName: "SA", country: "Italy", accent: "#2563eb", category: "domestic" },
+  { id: "bundesliga", name: "Bundesliga", shortName: "BL", country: "Germany", accent: "#ef4444", category: "domestic" },
+  { id: "la-liga", name: "La Liga", shortName: "LL", country: "Spain", accent: "#f97316", category: "domestic" },
+  { id: "ligue-1", name: "Ligue 1", shortName: "L1", country: "France", accent: "#06b6d4", category: "domestic" },
+  { id: "brasileirao", name: "Brasileirão", shortName: "BR", country: "Brazil", accent: "#16a34a", category: "domestic" },
+  { id: "liga-portugal", name: "Liga Portugal", shortName: "LP", country: "Portugal", accent: "#0f766e", category: "domestic" },
+  { id: "belgian-pro-league", name: "Belgian Pro League", shortName: "BPL", country: "Belgium", accent: "#8b5cf6", category: "domestic" },
+  { id: "mls", name: "Major League Soccer", shortName: "MLS", country: "United States", accent: "#0ea5e9", category: "domestic" },
+  { id: "saudi-pro-league", name: "Saudi Professional League", shortName: "SPL", country: "Saudi Arabia", accent: "#84cc16", category: "domestic" },
+  { id: "j1-league", name: "J1 League", shortName: "J1", country: "Japan", accent: "#dc2626", category: "domestic" },
+  { id: "k-league-1", name: "K League 1", shortName: "KL1", country: "South Korea", accent: "#0891b2", category: "domestic" },
+  { id: "uefa-champions-league", name: "UEFA Champions League", shortName: "UCL", country: "Europe", accent: "#4f46e5", category: "competition" },
+  { id: "uefa-europa-league", name: "UEFA Europa League", shortName: "UEL", country: "Europe", accent: "#f59e0b", category: "competition" },
+  { id: "uefa-conference-league", name: "UEFA Conference League", shortName: "UECL", country: "Europe", accent: "#14b8a6", category: "competition" },
+  { id: "uefa-super-cup", name: "UEFA Super Cup", shortName: "USC", country: "Europe", accent: "#64748b", category: "competition" },
+  { id: "fifa-world-cup", name: "FIFA World Cup", shortName: "WC", country: "International", accent: "#0f766e", category: "competition" },
+  { id: "uefa-euro", name: "UEFA European Championship", shortName: "EURO", country: "Europe", accent: "#2563eb", category: "competition" },
+  { id: "copa-america", name: "Copa América", shortName: "CA", country: "South America", accent: "#ca8a04", category: "competition" },
+  { id: "uefa-nations-league", name: "UEFA Nations League", shortName: "UNL", country: "Europe", accent: "#9333ea", category: "competition" },
 ] as const;
 
 type MatchStatus = "UPCOMING" | "LIVE" | "FT";

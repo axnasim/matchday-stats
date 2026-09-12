@@ -65,6 +65,15 @@ function AppShell({ children }: { children: ReactNode }) {
       <aside className="sidebar fixed inset-y-0 left-0 z-30 hidden w-[238px] flex-col border-r border-white/10 px-5 py-6 md:flex">
         <Brand />
         <div className="mt-12 flex flex-1 flex-col">
+          <p className="label-mono mb-3 px-3 text-white/40">Sports</p>
+          <div className="mb-8 space-y-1">
+            <div className="flex items-center gap-3 rounded-lg bg-[#63d7aa]/15 px-3 py-3 text-sm font-semibold text-[#8ce8c2]" aria-current="page">
+              <Trophy size={17} strokeWidth={1.8} />
+              <span>Soccer</span>
+              <span className="ml-auto rounded-full bg-[#63d7aa]/15 px-2 py-0.5 font-mono text-[10px] text-[#8ce8c2]">12 leagues</span>
+            </div>
+            <p className="px-3 pt-2 text-[11px] text-white/35">More sports coming soon</p>
+          </div>
           <p className="label-mono mb-3 px-3 text-white/40">Control room</p>
           <nav className="space-y-1">
             {links.map(({ href, label, icon: Icon }) => (
@@ -93,7 +102,7 @@ function AppShell({ children }: { children: ReactNode }) {
         <Brand compact />
         <button type="button" onClick={() => setMobileOpen((open) => !open)} aria-label="Open navigation" data-testid="button-open-navigation" className="rounded-lg p-2 text-[hsl(var(--foreground))] hover:bg-[hsl(var(--muted))]"><Menu size={20} /></button>
       </header>
-      {mobileOpen && <div className="mobile-only fixed inset-x-0 top-[57px] z-20 flex flex-col gap-1 border-b border-[hsl(var(--border))] bg-[hsl(var(--card))] p-3 shadow-lg md:hidden">{links.map(({ href, label, icon: Icon }) => <Link onClick={() => setMobileOpen(false)} key={href} href={href} data-testid={`link-mobile-${label.toLowerCase().replace(' ', '-')}`} className={`flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-semibold ${location === href ? 'bg-[hsl(var(--muted))] text-[hsl(var(--primary))]' : 'text-[hsl(var(--muted-foreground))]'}`}><Icon size={17} />{label}</Link>)}</div>}
+      {mobileOpen && <div className="mobile-only fixed inset-x-0 top-[57px] z-20 flex flex-col gap-1 border-b border-[hsl(var(--border))] bg-[hsl(var(--card))] p-3 shadow-lg md:hidden"><p className="label-mono px-3 pb-1 pt-2 text-[hsl(var(--muted-foreground))]">Sports</p><div className="flex items-center gap-3 rounded-lg bg-[hsl(var(--primary)/.12)] px-3 py-3 text-sm font-semibold text-[hsl(var(--primary))]"><Trophy size={17} /> <span>Soccer</span><span className="ml-auto font-mono text-[10px]">12 leagues</span></div><p className="px-3 pb-2 pt-1 text-[11px] text-[hsl(var(--muted-foreground))]">More sports coming soon</p>{links.map(({ href, label, icon: Icon }) => <Link onClick={() => setMobileOpen(false)} key={href} href={href} data-testid={`link-mobile-${label.toLowerCase().replace(' ', '-')}`} className={`flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-semibold ${location === href ? 'bg-[hsl(var(--muted))] text-[hsl(var(--primary))]' : 'text-[hsl(var(--muted-foreground))]'}`}><Icon size={17} />{label}</Link>)}</div>}
       <main className="content min-h-[100dvh] md:ml-[238px]">{children}</main>
     </div>
   );

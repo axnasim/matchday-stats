@@ -25,8 +25,14 @@ import type {
   HealthStatus,
   League,
   ListMatchesParams,
+  ListSoccerPlayersParams,
+  ListSoccerStatsParams,
+  ListSoccerTeamsParams,
   Match,
-  Overview
+  Overview,
+  PlayerStat,
+  SoccerPlayer,
+  SoccerTeam
 } from './api.schemas';
 
 import { customFetch } from '../custom-fetch';
@@ -610,4 +616,256 @@ export const useDeleteAlert = <TError = ErrorType<void>,
       > => {
       return useMutation(getDeleteAlertMutationOptions(options));
     }
+
+export const getListSoccerTeamsUrl = (params?: ListSoccerTeamsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/soccer/teams?${stringifiedParams}` : `/api/soccer/teams`
+}
+
+/**
+ * @summary List soccer teams
+ */
+export const listSoccerTeams = async (params?: ListSoccerTeamsParams, options?: Parameters<typeof customFetch>[1]): Promise<SoccerTeam[]> => {
+
+  return customFetch<SoccerTeam[]>(getListSoccerTeamsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListSoccerTeamsQueryKey = (params?: ListSoccerTeamsParams,) => {
+    return [
+    `/api/soccer/teams`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListSoccerTeamsQueryOptions = <TData = Awaited<ReturnType<typeof listSoccerTeams>>, TError = ErrorType<unknown>>(params?: ListSoccerTeamsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listSoccerTeams>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListSoccerTeamsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listSoccerTeams>>> = ({ signal }) => listSoccerTeams(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listSoccerTeams>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListSoccerTeamsQueryResult = NonNullable<Awaited<ReturnType<typeof listSoccerTeams>>>
+export type ListSoccerTeamsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List soccer teams
+ */
+
+export function useListSoccerTeams<TData = Awaited<ReturnType<typeof listSoccerTeams>>, TError = ErrorType<unknown>>(
+ params?: ListSoccerTeamsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listSoccerTeams>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListSoccerTeamsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getListSoccerPlayersUrl = (params?: ListSoccerPlayersParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/soccer/players?${stringifiedParams}` : `/api/soccer/players`
+}
+
+/**
+ * @summary List soccer players
+ */
+export const listSoccerPlayers = async (params?: ListSoccerPlayersParams, options?: Parameters<typeof customFetch>[1]): Promise<SoccerPlayer[]> => {
+
+  return customFetch<SoccerPlayer[]>(getListSoccerPlayersUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListSoccerPlayersQueryKey = (params?: ListSoccerPlayersParams,) => {
+    return [
+    `/api/soccer/players`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListSoccerPlayersQueryOptions = <TData = Awaited<ReturnType<typeof listSoccerPlayers>>, TError = ErrorType<unknown>>(params?: ListSoccerPlayersParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listSoccerPlayers>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListSoccerPlayersQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listSoccerPlayers>>> = ({ signal }) => listSoccerPlayers(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listSoccerPlayers>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListSoccerPlayersQueryResult = NonNullable<Awaited<ReturnType<typeof listSoccerPlayers>>>
+export type ListSoccerPlayersQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List soccer players
+ */
+
+export function useListSoccerPlayers<TData = Awaited<ReturnType<typeof listSoccerPlayers>>, TError = ErrorType<unknown>>(
+ params?: ListSoccerPlayersParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listSoccerPlayers>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListSoccerPlayersQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getListSoccerStatsUrl = (params?: ListSoccerStatsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/soccer/stats?${stringifiedParams}` : `/api/soccer/stats`
+}
+
+/**
+ * @summary List filterable soccer player statistics
+ */
+export const listSoccerStats = async (params?: ListSoccerStatsParams, options?: Parameters<typeof customFetch>[1]): Promise<PlayerStat[]> => {
+
+  return customFetch<PlayerStat[]>(getListSoccerStatsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListSoccerStatsQueryKey = (params?: ListSoccerStatsParams,) => {
+    return [
+    `/api/soccer/stats`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListSoccerStatsQueryOptions = <TData = Awaited<ReturnType<typeof listSoccerStats>>, TError = ErrorType<unknown>>(params?: ListSoccerStatsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listSoccerStats>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListSoccerStatsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listSoccerStats>>> = ({ signal }) => listSoccerStats(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listSoccerStats>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListSoccerStatsQueryResult = NonNullable<Awaited<ReturnType<typeof listSoccerStats>>>
+export type ListSoccerStatsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List filterable soccer player statistics
+ */
+
+export function useListSoccerStats<TData = Awaited<ReturnType<typeof listSoccerStats>>, TError = ErrorType<unknown>>(
+ params?: ListSoccerStatsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listSoccerStats>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListSoccerStatsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 

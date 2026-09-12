@@ -152,3 +152,78 @@ export const DeleteAlertParams = zod.object({
 export const DeleteAlertResponse = zod.void()
 
 
+/**
+ * @summary List soccer teams
+ */
+export const ListSoccerTeamsQueryParams = zod.object({
+  "leagueId": zod.coerce.string().optional()
+})
+
+export const ListSoccerTeamsResponseItem = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "shortName": zod.string(),
+  "leagueId": zod.string(),
+  "leagueName": zod.string(),
+  "country": zod.string(),
+  "position": zod.number().int(),
+  "form": zod.array(zod.enum(['W', 'D', 'L']))
+})
+export const ListSoccerTeamsResponse = zod.array(ListSoccerTeamsResponseItem)
+
+
+/**
+ * @summary List soccer players
+ */
+export const ListSoccerPlayersQueryParams = zod.object({
+  "leagueId": zod.coerce.string().optional(),
+  "teamId": zod.coerce.string().optional()
+})
+
+export const ListSoccerPlayersResponseItem = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "teamId": zod.string(),
+  "teamName": zod.string(),
+  "leagueId": zod.string(),
+  "leagueName": zod.string(),
+  "position": zod.string(),
+  "appearances": zod.number().int(),
+  "goals": zod.number().int(),
+  "assists": zod.number().int(),
+  "rating": zod.number()
+})
+export const ListSoccerPlayersResponse = zod.array(ListSoccerPlayersResponseItem)
+
+
+/**
+ * @summary List filterable soccer player statistics
+ */
+export const listSoccerStatsQuerySeasonDefault = `2026/27`;
+export const listSoccerStatsQueryCategoryDefault = `goals`;
+
+export const ListSoccerStatsQueryParams = zod.object({
+  "leagueId": zod.coerce.string().optional(),
+  "season": zod.coerce.string().default(listSoccerStatsQuerySeasonDefault),
+  "category": zod.enum(['goals', 'assists', 'appearances', 'minutes', 'rating', 'cleanSheets', 'cards']).default(listSoccerStatsQueryCategoryDefault)
+})
+
+export const ListSoccerStatsResponseItem = zod.object({
+  "rank": zod.number().int(),
+  "playerId": zod.string(),
+  "playerName": zod.string(),
+  "teamName": zod.string(),
+  "leagueId": zod.string(),
+  "leagueName": zod.string(),
+  "position": zod.string(),
+  "appearances": zod.number().int(),
+  "goals": zod.number().int(),
+  "assists": zod.number().int(),
+  "minutes": zod.number().int(),
+  "cleanSheets": zod.number().int(),
+  "cards": zod.number().int(),
+  "rating": zod.number()
+})
+export const ListSoccerStatsResponse = zod.array(ListSoccerStatsResponseItem)
+
+

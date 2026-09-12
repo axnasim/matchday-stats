@@ -1,8 +1,9 @@
-import { type ReactNode, useMemo, useState } from 'react';
+import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   Bell,
   BellRing,
+  BarChart3,
   Check,
   ChevronDown,
   CircleAlert,
@@ -19,6 +20,7 @@ import {
   SlidersHorizontal,
   Trash2,
   Trophy,
+  Users,
   X,
 } from 'lucide-react';
 import { Link, Route, Switch, useLocation } from 'wouter';
@@ -27,12 +29,18 @@ import {
   getListAlertsQueryKey,
   getListLeaguesQueryKey,
   getListMatchesQueryKey,
+  getListSoccerPlayersQueryKey,
+  getListSoccerStatsQueryKey,
+  getListSoccerTeamsQueryKey,
   useCreateAlert,
   useDeleteAlert,
   useGetOverview,
   useListAlerts,
   useListLeagues,
   useListMatches,
+  useListSoccerPlayers,
+  useListSoccerStats,
+  useListSoccerTeams,
 } from '@workspace/api-client-react';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
@@ -55,6 +63,7 @@ const formatRelative = (value?: string | null) => {
 function AppShell({ children }: { children: ReactNode }) {
   const [location] = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const soccerActive = location.startsWith('/soccer');
   const links = [
     { href: '/', label: 'Matchday', icon: LayoutDashboard },
     { href: '/alerts', label: 'Saved alerts', icon: BellRing },
@@ -67,11 +76,11 @@ function AppShell({ children }: { children: ReactNode }) {
         <div className="mt-12 flex flex-1 flex-col">
           <p className="label-mono mb-3 px-3 text-white/40">Sports</p>
           <div className="mb-8 space-y-1">
-            <div className="flex items-center gap-3 rounded-lg bg-[#63d7aa]/15 px-3 py-3 text-sm font-semibold text-[#8ce8c2]" aria-current="page">
+            <Link href="/soccer" className={`flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-semibold ${soccerActive ? 'bg-[#63d7aa]/15 text-[#8ce8c2]' : 'text-white/58 hover:bg-white/6 hover:text-white'}`} aria-current={soccerActive ? 'page' : undefined}>
               <Trophy size={17} strokeWidth={1.8} />
               <span>Soccer</span>
               <span className="ml-auto rounded-full bg-[#63d7aa]/15 px-2 py-0.5 font-mono text-[10px] text-[#8ce8c2]">12 leagues</span>
-            </div>
+            </Link>
             <p className="px-3 pt-2 text-[11px] text-white/35">More sports coming soon</p>
           </div>
           <p className="label-mono mb-3 px-3 text-white/40">Control room</p>
@@ -102,7 +111,7 @@ function AppShell({ children }: { children: ReactNode }) {
         <Brand compact />
         <button type="button" onClick={() => setMobileOpen((open) => !open)} aria-label="Open navigation" data-testid="button-open-navigation" className="rounded-lg p-2 text-[hsl(var(--foreground))] hover:bg-[hsl(var(--muted))]"><Menu size={20} /></button>
       </header>
-      {mobileOpen && <div className="mobile-only fixed inset-x-0 top-[57px] z-20 flex flex-col gap-1 border-b border-[hsl(var(--border))] bg-[hsl(var(--card))] p-3 shadow-lg md:hidden"><p className="label-mono px-3 pb-1 pt-2 text-[hsl(var(--muted-foreground))]">Sports</p><div className="flex items-center gap-3 rounded-lg bg-[hsl(var(--primary)/.12)] px-3 py-3 text-sm font-semibold text-[hsl(var(--primary))]"><Trophy size={17} /> <span>Soccer</span><span className="ml-auto font-mono text-[10px]">12 leagues</span></div><p className="px-3 pb-2 pt-1 text-[11px] text-[hsl(var(--muted-foreground))]">More sports coming soon</p>{links.map(({ href, label, icon: Icon }) => <Link onClick={() => setMobileOpen(false)} key={href} href={href} data-testid={`link-mobile-${label.toLowerCase().replace(' ', '-')}`} className={`flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-semibold ${location === href ? 'bg-[hsl(var(--muted))] text-[hsl(var(--primary))]' : 'text-[hsl(var(--muted-foreground))]'}`}><Icon size={17} />{label}</Link>)}</div>}
+      {mobileOpen && <div className="mobile-only fixed inset-x-0 top-[57px] z-20 flex flex-col gap-1 border-b border-[hsl(var(--border))] bg-[hsl(var(--card))] p-3 shadow-lg md:hidden"><p className="label-mono px-3 pb-1 pt-2 text-[hsl(var(--muted-foreground))]">Sports</p><Link href="/soccer" onClick={() => setMobileOpen(false)} data-testid="link-mobile-soccer" className={`flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-semibold ${soccerActive ? 'bg-[hsl(var(--primary)/.12)] text-[hsl(var(--primary))]' : 'text-[hsl(var(--muted-foreground))]'}`}><Trophy size={17} /> <span>Soccer</span><span className="ml-auto font-mono text-[10px]">12 leagues</span></Link><p className="px-3 pb-2 pt-1 text-[11px] text-[hsl(var(--muted-foreground))]">More sports coming soon</p>{links.map(({ href, label, icon: Icon }) => <Link onClick={() => setMobileOpen(false)} key={href} href={href} data-testid={`link-mobile-${label.toLowerCase().replace(' ', '-')}`} className={`flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-semibold ${location === href ? 'bg-[hsl(var(--muted))] text-[hsl(var(--primary))]' : 'text-[hsl(var(--muted-foreground))]'}`}><Icon size={17} />{label}</Link>)}</div>}
       <main className="content min-h-[100dvh] md:ml-[238px]">{children}</main>
     </div>
   );
@@ -175,6 +184,72 @@ function Dashboard() {
   </div></div>;
 }
 
+type SoccerSection = 'leagues' | 'teams' | 'players' | 'live';
+type StatCategory = 'goals' | 'assists' | 'appearances' | 'minutes' | 'rating' | 'cleanSheets' | 'cards';
+
+function SoccerHub() {
+  const [location] = useLocation();
+  const routeLeague = new URLSearchParams(location.split('?')[1] ?? '').get('league') ?? 'all';
+  const [section, setSection] = useState<SoccerSection>('leagues');
+  const [league, setLeague] = useState(routeLeague);
+  useEffect(() => setLeague(routeLeague), [routeLeague]);
+  const leagues = useListLeagues({ query: { queryKey: getListLeaguesQueryKey() } });
+  const leagueParams = league === 'all' ? undefined : { leagueId: league };
+  const teams = useListSoccerTeams(leagueParams, { query: { queryKey: getListSoccerTeamsQueryKey(leagueParams) } });
+  const players = useListSoccerPlayers(leagueParams, { query: { queryKey: getListSoccerPlayersQueryKey(leagueParams) } });
+  const liveParams = { dateRange: 'week' as const, status: 'live' as const };
+  const liveMatches = useListMatches(liveParams, { query: { queryKey: getListMatchesQueryKey(liveParams) } });
+  const tabs: { id: SoccerSection; label: string; count: number | undefined }[] = [
+    { id: 'leagues', label: 'Leagues', count: leagues.data?.length },
+    { id: 'teams', label: 'Teams', count: teams.data?.length },
+    { id: 'players', label: 'Players', count: players.data?.length },
+    { id: 'live', label: 'Live games', count: liveMatches.data?.length },
+  ];
+
+  return <div className="page-enter main-padding px-6 py-8 lg:px-10 lg:py-10">
+    <div className="mx-auto max-w-[1220px]">
+      <PageHeader eyebrow="Sports · Soccer" title="The soccer hub." description="Browse every supported league, club, player, and live game from one place." action={<Link href="/soccer/stats" data-testid="link-soccer-stats" className="action-button flex items-center gap-2 self-start rounded-lg bg-[hsl(var(--foreground))] px-4 py-3 text-xs font-bold text-[hsl(var(--background))] sm:self-auto"><BarChart3 size={15} /> Explore stats</Link>} />
+      <div className="mb-7 flex flex-wrap gap-2">
+        {tabs.map((tab) => <button type="button" key={tab.id} onClick={() => setSection(tab.id)} data-testid={`button-soccer-section-${tab.id}`} className={`rounded-lg border px-3.5 py-2.5 text-xs font-bold transition-colors ${section === tab.id ? 'border-[hsl(var(--primary))] bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]' : 'border-[hsl(var(--border))] bg-[hsl(var(--card))] text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]'}`}>{tab.label}{tab.count !== undefined && <span className="ml-2 font-mono text-[10px] opacity-70">{tab.count}</span>}</button>)}
+        <Link href="/soccer/stats" data-testid="link-soccer-stats-nav" className="flex items-center gap-2 rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--card))] px-3.5 py-2.5 text-xs font-bold text-[hsl(var(--muted-foreground))] hover:border-[hsl(var(--primary)/.4)] hover:text-[hsl(var(--primary))]"><BarChart3 size={14} /> Stats</Link>
+      </div>
+      <div className="mb-7 flex items-center gap-3 overflow-x-auto pb-1">
+        <span className="label-mono shrink-0 text-[hsl(var(--muted-foreground))]">League</span>
+        <button type="button" onClick={() => setLeague('all')} className={`shrink-0 rounded-full border px-3 py-2 text-xs font-bold ${league === 'all' ? 'border-[hsl(var(--primary))] bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]' : 'border-[hsl(var(--border))] bg-[hsl(var(--card))] text-[hsl(var(--muted-foreground))]'}`}>All leagues</button>
+        {(leagues.data ?? []).map((item: any) => <button type="button" key={item.id} onClick={() => setLeague(item.id)} className={`flex shrink-0 items-center gap-2 rounded-full border px-3 py-2 text-xs font-bold ${league === item.id ? 'border-[hsl(var(--primary))] bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]' : 'border-[hsl(var(--border))] bg-[hsl(var(--card))] text-[hsl(var(--muted-foreground))]'}`}><span className="h-2 w-2 rounded-full" style={{ backgroundColor: item.accent }} />{item.shortName}</button>)}
+      </div>
+      {section === 'leagues' && <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{(leagues.data ?? []).map((item: any) => <Link href={`/soccer?league=${item.id}`} key={item.id} className="card-surface match-row rounded-xl p-5"><div className="mb-6 flex items-start justify-between"><span className="flex h-10 w-10 items-center justify-center rounded-xl font-mono text-xs font-bold text-white" style={{ backgroundColor: item.accent }}>{item.shortName}</span><span className="label-mono text-[hsl(var(--muted-foreground))]">{item.country}</span></div><p className="display-font text-xl font-bold">{item.name}</p><p className="mt-1 text-xs text-[hsl(var(--muted-foreground))]">View teams, players, fixtures, and stats</p></Link>)}</div>}
+      {section === 'teams' && <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{(teams.data ?? []).map((item: any) => <div key={item.id} className="card-surface rounded-xl p-5"><div className="flex items-start justify-between"><div><p className="display-font text-lg font-bold">{item.name}</p><p className="mt-1 text-xs text-[hsl(var(--muted-foreground))]">{item.leagueName}</p></div><span className="font-mono text-2xl font-bold text-[hsl(var(--primary))]">#{item.position}</span></div><div className="mt-5 flex items-center justify-between"><span className="label-mono text-[hsl(var(--muted-foreground))]">Recent form</span><div className="flex gap-1.5">{item.form.map((result: string, index: number) => <span key={`${item.id}-${index}`} className={`flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold ${result === 'W' ? 'bg-[hsl(var(--primary)/.13)] text-[hsl(var(--primary))]' : result === 'D' ? 'bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))]' : 'bg-[hsl(var(--accent)/.13)] text-[hsl(var(--accent))]'}`}>{result}</span>)}</div></div></div>)}</div>}
+      {section === 'players' && <div className="card-surface overflow-hidden rounded-xl"><div className="hidden grid-cols-[1fr_120px_90px_90px_90px] gap-4 border-b border-[hsl(var(--border))] px-5 py-3 label-mono text-[hsl(var(--muted-foreground))] sm:grid"><span>Player</span><span>League</span><span>Apps</span><span>Goals</span><span>Rating</span></div>{(players.data ?? []).map((item: any) => <div key={item.id} className="grid gap-3 border-b border-[hsl(var(--border))] px-5 py-4 last:border-0 sm:grid-cols-[1fr_120px_90px_90px_90px] sm:items-center sm:gap-4"><div className="flex items-center gap-3"><span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[hsl(var(--primary)/.1)] text-[hsl(var(--primary))]"><Users size={16} /></span><div><p className="font-bold">{item.name}</p><p className="text-xs text-[hsl(var(--muted-foreground))]">{item.teamName} · {item.position}</p></div></div><span className="text-xs text-[hsl(var(--muted-foreground))] sm:text-sm">{item.leagueName}</span><span className="text-xs font-semibold sm:text-sm">{item.appearances} apps</span><span className="text-xs font-semibold sm:text-sm">{item.goals} goals</span><span className="font-mono text-sm text-[hsl(var(--primary))]">{item.rating.toFixed(1)}</span></div>)}</div>}
+      {section === 'live' && <div className="space-y-3">{(liveMatches.data ?? []).map((item: any) => <MatchRow key={item.id} match={item} onAlert={() => undefined} />)}{!liveMatches.data?.length && <EmptyState title="No live games right now" detail="When a match starts, it will appear here with its score and minute." />}</div>}
+    </div>
+  </div>;
+}
+
+function SoccerStatsPage() {
+  const [league, setLeague] = useState('all');
+  const [season, setSeason] = useState('2026/27');
+  const [category, setCategory] = useState<StatCategory>('goals');
+  const leagues = useListLeagues({ query: { queryKey: getListLeaguesQueryKey() } });
+  const params = useMemo(() => ({ leagueId: league === 'all' ? undefined : league, season, category }), [league, season, category]);
+  const stats = useListSoccerStats(params, { query: { queryKey: getListSoccerStatsQueryKey(params) } });
+  const categoryLabels: Record<StatCategory, string> = { goals: 'Goals', assists: 'Assists', appearances: 'Appearances', minutes: 'Minutes', rating: 'Rating', cleanSheets: 'Clean sheets', cards: 'Cards' };
+  const statValue = (item: any) => category === 'rating' ? item.rating.toFixed(1) : item[category];
+
+  return <div className="page-enter main-padding px-6 py-8 lg:px-10 lg:py-10">
+    <div className="mx-auto max-w-[1220px]">
+      <PageHeader eyebrow="Sports · Soccer · Stats" title="Player statistics." description="Filterable league tables for the metrics football fans expect from an EPL-style stats centre." action={<Link href="/soccer" data-testid="link-back-soccer" className="action-button flex items-center gap-2 self-start rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--card))] px-4 py-3 text-xs font-bold sm:self-auto">Back to soccer</Link>} />
+      <div className="card-surface mb-6 grid gap-3 rounded-xl p-4 sm:grid-cols-3">
+        <label className="label-mono text-[hsl(var(--muted-foreground))]">League<select value={league} onChange={(event) => setLeague(event.target.value)} className="mt-2 block w-full rounded-lg border border-[hsl(var(--input))] bg-[hsl(var(--background))] px-3 py-2.5 font-sans text-sm font-semibold text-[hsl(var(--foreground))] outline-none focus:border-[hsl(var(--primary))]"><option value="all">All leagues</option>{(leagues.data ?? []).map((item: any) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
+        <label className="label-mono text-[hsl(var(--muted-foreground))]">Season<select value={season} onChange={(event) => setSeason(event.target.value)} className="mt-2 block w-full rounded-lg border border-[hsl(var(--input))] bg-[hsl(var(--background))] px-3 py-2.5 font-sans text-sm font-semibold text-[hsl(var(--foreground))] outline-none focus:border-[hsl(var(--primary))]"><option>2026/27</option><option>2025/26</option></select></label>
+        <label className="label-mono text-[hsl(var(--muted-foreground))]">Metric<select value={category} onChange={(event) => setCategory(event.target.value as StatCategory)} className="mt-2 block w-full rounded-lg border border-[hsl(var(--input))] bg-[hsl(var(--background))] px-3 py-2.5 font-sans text-sm font-semibold text-[hsl(var(--foreground))] outline-none focus:border-[hsl(var(--primary))]">{Object.entries(categoryLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+      </div>
+      <div className="mb-4 flex items-center justify-between"><div><p className="label-mono text-[hsl(var(--primary))]">{categoryLabels[category]} leaders</p><p className="mt-1 text-sm text-[hsl(var(--muted-foreground))]">Updated with the current soccer data feed.</p></div><BarChart3 className="text-[hsl(var(--primary))]" size={22} /></div>
+      {stats.isLoading ? <div className="space-y-3"><Skeleton className="h-20" /><Skeleton className="h-20" /><Skeleton className="h-20" /></div> : stats.isError ? <QueryError retry={() => void stats.refetch()} /> : <div className="card-surface overflow-hidden rounded-xl"><div className="hidden grid-cols-[60px_1fr_160px_80px_90px_80px] gap-4 border-b border-[hsl(var(--border))] px-5 py-3 label-mono text-[hsl(var(--muted-foreground))] sm:grid"><span>#</span><span>Player</span><span>League</span><span>Pos</span><span>{categoryLabels[category]}</span><span>Rating</span></div>{(stats.data ?? []).map((item: any) => <div key={item.playerId} className="grid gap-2 border-b border-[hsl(var(--border))] px-5 py-4 last:border-0 sm:grid-cols-[60px_1fr_160px_80px_90px_80px] sm:items-center sm:gap-4"><span className="font-mono text-sm text-[hsl(var(--muted-foreground))]">#{item.rank}</span><div className="flex items-center gap-3"><span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[hsl(var(--primary)/.1)] text-[hsl(var(--primary))]"><Users size={16} /></span><div><p className="font-bold">{item.playerName}</p><p className="text-xs text-[hsl(var(--muted-foreground))]">{item.teamName}</p></div></div><span className="text-xs text-[hsl(var(--muted-foreground))] sm:text-sm">{item.leagueName}</span><span className="text-xs font-semibold">{item.position}</span><span className="font-mono text-lg font-bold text-[hsl(var(--primary))]">{statValue(item)}</span><span className="font-mono text-sm">{item.rating.toFixed(1)}</span></div>)}</div>}
+    </div>
+  </div>;
+}
+
 function AlertComposer({ initial, leagues, onClose }: { initial?: { team: string; leagueId: string }; leagues: any[]; onClose: () => void }) {
   const create = useCreateAlert();
   const [teamName, setTeamName] = useState(initial?.team ?? '');
@@ -211,7 +286,7 @@ function SettingsPage() {
 
 function Router() {
   const [location] = useLocation();
-  return <AppShell><ErrorBoundary resetKey={location}><Switch><Route path="/" component={Dashboard} /><Route path="/alerts" component={AlertsPage} /><Route path="/settings" component={SettingsPage} /><Route component={NotFound} /></Switch></ErrorBoundary></AppShell>;
+  return <AppShell><ErrorBoundary resetKey={location}><Switch><Route path="/" component={Dashboard} /><Route path="/soccer/stats" component={SoccerStatsPage} /><Route path="/soccer" component={SoccerHub} /><Route path="/alerts" component={AlertsPage} /><Route path="/settings" component={SettingsPage} /><Route component={NotFound} /></Switch></ErrorBoundary></AppShell>;
 }
 
 function App() {

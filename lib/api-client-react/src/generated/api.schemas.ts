@@ -96,6 +96,57 @@ export interface AlertInput {
   alertTypes: AlertInputAlertTypesItem[];
 }
 
+export type SoccerTeamFormItem = typeof SoccerTeamFormItem[keyof typeof SoccerTeamFormItem];
+
+
+export const SoccerTeamFormItem = {
+  W: 'W',
+  D: 'D',
+  L: 'L',
+} as const;
+
+export interface SoccerTeam {
+  id: string;
+  name: string;
+  shortName: string;
+  leagueId: string;
+  leagueName: string;
+  country: string;
+  position: number;
+  form: SoccerTeamFormItem[];
+}
+
+export interface SoccerPlayer {
+  id: string;
+  name: string;
+  teamId: string;
+  teamName: string;
+  leagueId: string;
+  leagueName: string;
+  position: string;
+  appearances: number;
+  goals: number;
+  assists: number;
+  rating: number;
+}
+
+export interface PlayerStat {
+  rank: number;
+  playerId: string;
+  playerName: string;
+  teamName: string;
+  leagueId: string;
+  leagueName: string;
+  position: string;
+  appearances: number;
+  goals: number;
+  assists: number;
+  minutes: number;
+  cleanSheets: number;
+  cards: number;
+  rating: number;
+}
+
 export type ListMatchesParams = {
 dateRange?: ListMatchesDateRange;
 leagueId?: string;
@@ -118,5 +169,33 @@ export const ListMatchesStatus = {
   upcoming: 'upcoming',
   live: 'live',
   finished: 'finished',
+} as const;
+
+export type ListSoccerTeamsParams = {
+leagueId?: string;
+};
+
+export type ListSoccerPlayersParams = {
+leagueId?: string;
+teamId?: string;
+};
+
+export type ListSoccerStatsParams = {
+leagueId?: string;
+season?: string;
+category?: ListSoccerStatsCategory;
+};
+
+export type ListSoccerStatsCategory = typeof ListSoccerStatsCategory[keyof typeof ListSoccerStatsCategory];
+
+
+export const ListSoccerStatsCategory = {
+  goals: 'goals',
+  assists: 'assists',
+  appearances: 'appearances',
+  minutes: 'minutes',
+  rating: 'rating',
+  cleanSheets: 'cleanSheets',
+  cards: 'cards',
 } as const;
 

@@ -6,6 +6,12 @@ import {
   GetOverviewResponse,
   ListAlertsResponse,
   ListLeaguesResponse,
+  ListSoccerPlayersQueryParams,
+  ListSoccerPlayersResponse,
+  ListSoccerStatsQueryParams,
+  ListSoccerStatsResponse,
+  ListSoccerTeamsQueryParams,
+  ListSoccerTeamsResponse,
   ListMatchesQueryParams,
   ListMatchesResponse,
 } from "@workspace/api-zod";
@@ -98,6 +104,30 @@ const matches: Match[] = [
   match("ll-mad-sev", "la-liga", "2026-09-10T20:00:00.000Z", "FT", team("Real Madrid", "Real Madrid", "RM"), team("Sevilla", "Sevilla", "SE"), { venue: "Santiago Bernabéu", round: "Matchday 4", homeScore: 1, awayScore: 1 }),
 ];
 
+const soccerTeams = [
+  { id: "arsenal", name: "Arsenal", shortName: "Arsenal", leagueId: "premier-league", leagueName: "Premier League", country: "England", position: 1, form: ["W", "W", "D", "W", "W"] },
+  { id: "liverpool", name: "Liverpool", shortName: "Liverpool", leagueId: "premier-league", leagueName: "Premier League", country: "England", position: 2, form: ["W", "W", "W", "L", "W"] },
+  { id: "bayern", name: "Bayern Munich", shortName: "Bayern", leagueId: "bundesliga", leagueName: "Bundesliga", country: "Germany", position: 1, form: ["W", "W", "W", "D", "W"] },
+  { id: "dortmund", name: "Dortmund", shortName: "Dortmund", leagueId: "bundesliga", leagueName: "Bundesliga", country: "Germany", position: 3, form: ["W", "D", "W", "W", "L"] },
+  { id: "barcelona", name: "Barcelona", shortName: "Barcelona", leagueId: "la-liga", leagueName: "La Liga", country: "Spain", position: 1, form: ["W", "W", "W", "W", "D"] },
+  { id: "inter", name: "Inter", shortName: "Inter", leagueId: "serie-a", leagueName: "Serie A", country: "Italy", position: 1, form: ["W", "W", "D", "W", "W"] },
+  { id: "lafc", name: "Los Angeles FC", shortName: "LAFC", leagueId: "mls", leagueName: "Major League Soccer", country: "United States", position: 2, form: ["W", "L", "W", "W", "D"] },
+  { id: "flamengo", name: "Flamengo", shortName: "Flamengo", leagueId: "brasileirao", leagueName: "Brasileirão", country: "Brazil", position: 1, form: ["W", "W", "W", "D", "W"] },
+];
+
+const playerStats = [
+  { playerId: "saka", playerName: "Bukayo Saka", teamName: "Arsenal", leagueId: "premier-league", leagueName: "Premier League", position: "FW", appearances: 5, goals: 5, assists: 3, minutes: 438, cleanSheets: 0, cards: 1, rating: 8.4 },
+  { playerId: "salah", playerName: "Mohamed Salah", teamName: "Liverpool", leagueId: "premier-league", leagueName: "Premier League", position: "FW", appearances: 5, goals: 4, assists: 4, minutes: 447, cleanSheets: 0, cards: 0, rating: 8.2 },
+  { playerId: "kane", playerName: "Harry Kane", teamName: "Bayern Munich", leagueId: "bundesliga", leagueName: "Bundesliga", position: "FW", appearances: 4, goals: 6, assists: 2, minutes: 359, cleanSheets: 0, cards: 0, rating: 8.6 },
+  { playerId: "musiala", playerName: "Jamal Musiala", teamName: "Bayern Munich", leagueId: "bundesliga", leagueName: "Bundesliga", position: "MF", appearances: 4, goals: 3, assists: 3, minutes: 326, cleanSheets: 0, cards: 1, rating: 8.1 },
+  { playerId: "yamal", playerName: "Lamine Yamal", teamName: "Barcelona", leagueId: "la-liga", leagueName: "La Liga", position: "FW", appearances: 5, goals: 4, assists: 5, minutes: 421, cleanSheets: 0, cards: 1, rating: 8.5 },
+  { playerId: "thuram", playerName: "Marcus Thuram", teamName: "Inter", leagueId: "serie-a", leagueName: "Serie A", position: "FW", appearances: 4, goals: 4, assists: 2, minutes: 348, cleanSheets: 0, cards: 0, rating: 8.0 },
+  { playerId: "bouanga", playerName: "Denis Bouanga", teamName: "Los Angeles FC", leagueId: "mls", leagueName: "Major League Soccer", position: "FW", appearances: 5, goals: 5, assists: 2, minutes: 452, cleanSheets: 0, cards: 1, rating: 8.3 },
+  { playerId: "pedro", playerName: "Pedro", teamName: "Flamengo", leagueId: "brasileirao", leagueName: "Brasileirão", position: "FW", appearances: 5, goals: 6, assists: 1, minutes: 431, cleanSheets: 0, cards: 0, rating: 8.5 },
+  { playerId: "raya", playerName: "David Raya", teamName: "Arsenal", leagueId: "premier-league", leagueName: "Premier League", position: "GK", appearances: 5, goals: 0, assists: 0, minutes: 450, cleanSheets: 3, cards: 0, rating: 7.8 },
+  { playerId: "sommer", playerName: "Yann Sommer", teamName: "Inter", leagueId: "serie-a", leagueName: "Serie A", position: "GK", appearances: 4, goals: 0, assists: 0, minutes: 360, cleanSheets: 3, cards: 0, rating: 7.9 },
+];
+
 type Alert = {
   id: string;
   leagueId: string;
@@ -141,6 +171,45 @@ router.get("/matches", (req, res) => {
 
   result.sort((a, b) => new Date(a.kickoff).getTime() - new Date(b.kickoff).getTime());
   res.json(ListMatchesResponse.parse(result));
+});
+
+router.get("/soccer/teams", (req, res) => {
+  const params = ListSoccerTeamsQueryParams.parse(req.query);
+  const result = params.leagueId
+    ? soccerTeams.filter((item) => item.leagueId === params.leagueId)
+    : soccerTeams;
+  res.json(ListSoccerTeamsResponse.parse(result));
+});
+
+router.get("/soccer/players", (req, res) => {
+  const params = ListSoccerPlayersQueryParams.parse(req.query);
+  const result = playerStats
+    .filter((item) => !params.leagueId || item.leagueId === params.leagueId)
+    .filter((item) => !params.teamId || item.teamName.toLowerCase().replaceAll(" ", "-") === params.teamId)
+    .map(({ playerId, playerName, teamName, leagueId, leagueName, position, appearances, goals, assists, rating }) => ({
+      id: playerId,
+      name: playerName,
+      teamId: teamName.toLowerCase().replaceAll(" ", "-"),
+      teamName,
+      leagueId,
+      leagueName,
+      position,
+      appearances,
+      goals,
+      assists,
+      rating,
+    }));
+  res.json(ListSoccerPlayersResponse.parse(result));
+});
+
+router.get("/soccer/stats", (req, res) => {
+  const params = ListSoccerStatsQueryParams.parse(req.query);
+  const filtered = playerStats.filter((item) => !params.leagueId || item.leagueId === params.leagueId);
+  const metric = params.category;
+  const result = [...filtered]
+    .sort((a, b) => b[metric] - a[metric])
+    .map((item, index) => ({ ...item, rank: index + 1 }));
+  res.json(ListSoccerStatsResponse.parse(result));
 });
 
 router.get("/overview", (_req, res) => {

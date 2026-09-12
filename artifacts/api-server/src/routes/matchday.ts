@@ -39,6 +39,8 @@ const leagues = [
   { id: "uefa-euro", name: "UEFA European Championship", shortName: "EURO", country: "Europe", accent: "#2563eb", category: "competition" },
   { id: "copa-america", name: "Copa América", shortName: "CA", country: "South America", accent: "#ca8a04", category: "competition" },
   { id: "uefa-nations-league", name: "UEFA Nations League", shortName: "UNL", country: "Europe", accent: "#9333ea", category: "competition" },
+  { id: "africa-cup-of-nations", name: "Africa Cup of Nations", shortName: "AFCON", country: "Africa", accent: "#dc2626", category: "competition" },
+  { id: "caf-champions-league", name: "CAF Champions League", shortName: "CAF CL", country: "Africa", accent: "#15803d", category: "competition" },
 ] as const;
 
 type MatchStatus = "UPCOMING" | "LIVE" | "FT";

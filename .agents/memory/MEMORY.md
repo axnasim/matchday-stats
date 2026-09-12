@@ -1,0 +1,1 @@
+- [Generated client typing](api-client-dom-iterable.md) — include `dom.iterable` when the generated fetch client uses `Headers.entries()`.

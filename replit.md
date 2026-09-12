@@ -1,6 +1,6 @@
-# [Project name]
+# tekbytz.sports
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+tekbytz.sports helps football fans monitor fixtures across twelve leagues and receive browser notifications for the teams and moments they care about.
 
 ## Run & Operate
 
@@ -22,15 +22,23 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/matchday-alerts` — React + Vite web app with dashboard, alerts, and settings routes.
+- `artifacts/api-server/src/routes/matchday.ts` — matchday API and the initial fixture/alert data source.
+- `lib/api-spec/openapi.yaml` — source of truth for match, league, overview, and alert contracts.
+- `lib/api-client-react/src/generated` — generated React Query client hooks.
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- The frontend talks to the shared API server through generated OpenAPI hooks.
+- Browser Notifications are used for the first notification delivery path so the experience works without requiring a third-party account.
+- Fixture and alert state currently lives in the API process; the API boundary is ready to swap to a live sports feed and persistent storage.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Dashboard overview for live, upcoming, and finished matches.
+- League and status filters across Premier League, Serie A, Bundesliga, La Liga, Ligue 1, Brasileirão, Liga Portugal, Belgian Pro League, MLS, Saudi Professional League, J1 League, and K League 1.
+- Saved team alert rules for kickoff, goals, and final score events.
+- Settings for browser notification permission and refresh cadence.
 
 ## User preferences
 

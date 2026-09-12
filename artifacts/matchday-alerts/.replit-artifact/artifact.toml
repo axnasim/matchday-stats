@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Matchday Alerts"
+description = "A football match monitoring app for tracking fixtures across twelve global leagues, saving alert preferences, and receiving browser notifications for kickoff, goals, and final scores."
+version = "1.0.0"
+id = "artifacts/matchday-alerts"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21399
+
+[services.development]
+run = "pnpm --filter @workspace/matchday-alerts run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/matchday-alerts", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/matchday-alerts/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21399"
+BASE_PATH = "/"

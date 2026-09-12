@@ -10,6 +10,12 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: matches
+    description: Fixture and live score operations
+  - name: leagues
+    description: Supported league operations
+  - name: alerts
+    description: Match alert rule operations
 paths:
   /healthz:
     get:
@@ -24,6 +30,113 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /leagues:
+    get:
+      operationId: listLeagues
+      tags: [leagues]
+      summary: List supported leagues
+      responses:
+        "200":
+          description: Supported leagues
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/League"
+  /matches:
+    get:
+      operationId: listMatches
+      tags: [matches]
+      summary: List matches across supported leagues
+      parameters:
+        - name: dateRange
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [today, week]
+            default: week
+        - name: leagueId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [all, upcoming, live, finished]
+            default: all
+      responses:
+        "200":
+          description: Matches
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Match"
+  /overview:
+    get:
+      operationId: getOverview
+      tags: [matches]
+      summary: Get the matchday overview
+      responses:
+        "200":
+          description: Overview
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Overview"
+  /alerts:
+    get:
+      operationId: listAlerts
+      tags: [alerts]
+      summary: List saved alert rules
+      responses:
+        "200":
+          description: Saved alerts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Alert"
+    post:
+      operationId: createAlert
+      tags: [alerts]
+      summary: Create an alert rule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AlertInput"
+      responses:
+        "201":
+          description: Created alert
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Alert"
+  /alerts/{id}:
+    delete:
+      operationId: deleteAlert
+      tags: [alerts]
+      summary: Delete an alert rule
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Alert deleted
+        "404":
+          description: Alert not found
 components:
   schemas:
     HealthStatus:
@@ -33,4 +146,116 @@ components:
           type: string
       required:
         - status
+    League:
+      type: object
+      required: [id, name, shortName, country, accent]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        shortName:
+          type: string
+        country:
+          type: string
+        accent:
+          type: string
+    Team:
+      type: object
+      required: [name, shortName, initials]
+      properties:
+        name:
+          type: string
+        shortName:
+          type: string
+        initials:
+          type: string
+    Match:
+      type: object
+      required: [id, leagueId, leagueName, leagueShortName, kickoff, status, homeTeam, awayTeam, venue, round]
+      properties:
+        id:
+          type: string
+        leagueId:
+          type: string
+        leagueName:
+          type: string
+        leagueShortName:
+          type: string
+        kickoff:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [UPCOMING, LIVE, FT]
+        minute:
+          type: [integer, "null"]
+        homeTeam:
+          $ref: "#/components/schemas/Team"
+        awayTeam:
+          $ref: "#/components/schemas/Team"
+        homeScore:
+          type: [integer, "null"]
+        awayScore:
+          type: [integer, "null"]
+        venue:
+          type: string
+        round:
+          type: string
+    Overview:
+      type: object
+      required: [liveCount, upcomingCount, finishedCount, trackedLeagueCount, nextMatch, lastUpdated]
+      properties:
+        liveCount:
+          type: integer
+        upcomingCount:
+          type: integer
+        finishedCount:
+          type: integer
+        trackedLeagueCount:
+          type: integer
+        nextMatch:
+          allOf:
+            - $ref: "#/components/schemas/Match"
+          nullable: true
+        lastUpdated:
+          type: string
+          format: date-time
+    Alert:
+      type: object
+      required: [id, leagueId, leagueName, teamName, alertTypes, enabled, createdAt]
+      properties:
+        id:
+          type: string
+        leagueId:
+          type: string
+        leagueName:
+          type: string
+        teamName:
+          type: string
+        alertTypes:
+          type: array
+          items:
+            type: string
+            enum: [kickoff, goals, final]
+        enabled:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+    AlertInput:
+      type: object
+      required: [leagueId, teamName, alertTypes]
+      properties:
+        leagueId:
+          type: string
+        teamName:
+          type: string
+          minLength: 1
+        alertTypes:
+          type: array
+          minItems: 1
+          items:
+            type: string
+            enum: [kickoff, goals, final]
 

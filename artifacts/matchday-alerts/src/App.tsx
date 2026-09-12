@@ -11,13 +11,16 @@ import {
   ExternalLink,
   Flame,
   Gauge,
+  Globe2,
   LayoutDashboard,
+  Medal,
   Menu,
   Plus,
   RefreshCw,
   Settings2,
   ShieldCheck,
   SlidersHorizontal,
+  Star,
   Trash2,
   Trophy,
   Users,
@@ -97,7 +100,7 @@ function AppShell({ children }: { children: ReactNode }) {
             <div className="mb-3 flex items-center justify-between">
               <span className="label-mono text-white/45">Matchday pulse</span>
               <span className="live-dot h-2 w-2 rounded-full bg-[#63d7aa]" />
-            </div>
+              </div>
             <p className="display-font text-2xl font-semibold text-white">On the ball.</p>
             <p className="mt-1 text-xs leading-relaxed text-white/48">Your important fixtures, without the noise.</p>
           </div>
@@ -191,13 +194,13 @@ function LeagueGroup({ title, detail, items }: { title: string; detail: string; 
   </section>;
 }
 
-type SoccerSection = 'leagues' | 'teams' | 'players' | 'live';
+type SoccerSection = 'overview' | 'priority' | 'championships' | 'continents' | 'live' | 'teams' | 'players';
 type StatCategory = 'goals' | 'assists' | 'appearances' | 'minutes' | 'rating' | 'cleanSheets' | 'cards';
 
 function SoccerHub() {
   const [location] = useLocation();
   const routeLeague = new URLSearchParams(location.split('?')[1] ?? '').get('league') ?? 'all';
-  const [section, setSection] = useState<SoccerSection>('leagues');
+  const [section, setSection] = useState<SoccerSection>('overview');
   const [league, setLeague] = useState(routeLeague);
   useEffect(() => setLeague(routeLeague), [routeLeague]);
   const leagues = useListLeagues({ query: { queryKey: getListLeaguesQueryKey() } });
@@ -206,31 +209,48 @@ function SoccerHub() {
   const players = useListSoccerPlayers(leagueParams, { query: { queryKey: getListSoccerPlayersQueryKey(leagueParams) } });
   const liveParams = { dateRange: 'week' as const, status: 'live' as const };
   const liveMatches = useListMatches(liveParams, { query: { queryKey: getListMatchesQueryKey(liveParams) } });
-  const tabs: { id: SoccerSection; label: string; count: number | undefined }[] = [
-    { id: 'leagues', label: 'Leagues', count: leagues.data?.length },
-    { id: 'teams', label: 'Teams', count: teams.data?.length },
-    { id: 'players', label: 'Players', count: players.data?.length },
-    { id: 'live', label: 'Live games', count: liveMatches.data?.length },
-  ];
   const domesticLeagues = (leagues.data ?? []).filter((item: any) => item.category === 'domestic');
   const competitionLeagues = (leagues.data ?? []).filter((item: any) => item.category === 'competition');
+  const priorityIds = ['premier-league', 'uefa-champions-league', 'africa-cup-of-nations', 'copa-america'];
+  const priorityLeagues = (leagues.data ?? []).filter((item: any) => priorityIds.includes(item.id));
+  const continents = [
+    { id: 'europe', label: 'Europe', detail: 'Domestic leagues and UEFA competitions', countries: ['Europe', 'England', 'Italy', 'Germany', 'Spain', 'France', 'Portugal', 'Belgium'] },
+    { id: 'africa', label: 'Africa', detail: 'Domestic leagues and CAF competitions', countries: ['Africa', 'Egypt', 'Morocco', 'South Africa', 'Algeria', 'Tunisia', 'Nigeria'] },
+    { id: 'asia-oceania', label: 'Asia & Oceania', detail: 'Domestic leagues and AFC/OFC competitions', countries: ['Asia', 'Oceania', 'Japan', 'South Korea', 'China', 'Australia', 'India'] },
+    { id: 'north-america', label: 'North America', detail: 'Domestic leagues and CONCACAF competitions', countries: ['North America', 'United States', 'Mexico', 'Canada'] },
+    { id: 'south-america', label: 'South America', detail: 'Domestic leagues and CONMEBOL competitions', countries: ['South America', 'Brazil', 'Argentina', 'Colombia', 'Chile', 'Ecuador'] },
+  ];
+  const navItems: { id: SoccerSection; label: string; icon: typeof LayoutDashboard }[] = [
+    { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+    { id: 'priority', label: 'Priority', icon: Star },
+    { id: 'championships', label: 'Championships', icon: Medal },
+    { id: 'continents', label: 'Continents', icon: Globe2 },
+    { id: 'live', label: 'Live', icon: Flame },
+    { id: 'teams', label: 'Teams', icon: ShieldCheck },
+    { id: 'players', label: 'Players', icon: Users },
+  ];
 
   return <div className="page-enter main-padding px-6 py-8 lg:px-10 lg:py-10">
     <div className="mx-auto max-w-[1220px]">
-      <PageHeader eyebrow="Sports · Soccer" title="The soccer hub." description="Browse every supported league, club, player, and live game from one place." action={<Link href="/soccer/stats" data-testid="link-soccer-stats" className="action-button flex items-center gap-2 self-start rounded-lg bg-[hsl(var(--foreground))] px-4 py-3 text-xs font-bold text-[hsl(var(--background))] sm:self-auto"><BarChart3 size={15} /> Explore stats</Link>} />
-      <div className="mb-7 flex flex-wrap gap-2">
-        {tabs.map((tab) => <button type="button" key={tab.id} onClick={() => setSection(tab.id)} data-testid={`button-soccer-section-${tab.id}`} className={`rounded-lg border px-3.5 py-2.5 text-xs font-bold transition-colors ${section === tab.id ? 'border-[hsl(var(--primary))] bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]' : 'border-[hsl(var(--border))] bg-[hsl(var(--card))] text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]'}`}>{tab.label}{tab.count !== undefined && <span className="ml-2 font-mono text-[10px] opacity-70">{tab.count}</span>}</button>)}
-        <Link href="/soccer/stats" data-testid="link-soccer-stats-nav" className="flex items-center gap-2 rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--card))] px-3.5 py-2.5 text-xs font-bold text-[hsl(var(--muted-foreground))] hover:border-[hsl(var(--primary)/.4)] hover:text-[hsl(var(--primary))]"><BarChart3 size={14} /> Stats</Link>
+      <PageHeader eyebrow="Sports · Soccer" title="The soccer hub." description="Browse priority competitions, championships, regions, clubs, players, and live games from one place." />
+      <div className="mb-8 rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-2">
+        <div className="mobile-scroll flex gap-1">
+          {navItems.map(({ id, label, icon: Icon }) => <button type="button" key={id} onClick={() => setSection(id)} data-testid={`button-soccer-nav-${id}`} className={`flex shrink-0 items-center gap-2 rounded-lg px-3 py-2.5 text-xs font-bold transition-colors ${section === id ? 'bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]' : 'text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--muted))] hover:text-[hsl(var(--foreground))]'}`}><Icon size={14} />{label}{id === 'live' && liveMatches.data?.length ? <span className="font-mono text-[10px] opacity-70">{liveMatches.data.length}</span> : null}</button>)}
+          <Link href="/soccer/stats" data-testid="link-soccer-stats-nav" className="flex shrink-0 items-center gap-2 rounded-lg px-3 py-2.5 text-xs font-bold text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--muted))] hover:text-[hsl(var(--foreground))]"><BarChart3 size={14} /> Stats</Link>
+        </div>
       </div>
-      <div className="mb-7 flex items-center gap-3 overflow-x-auto pb-1">
+       {(section === 'overview' || section === 'live' || section === 'teams' || section === 'players') && <div className="mb-7 flex items-center gap-3 overflow-x-auto pb-1">
         <span className="label-mono shrink-0 text-[hsl(var(--muted-foreground))]">League</span>
         <button type="button" onClick={() => setLeague('all')} className={`shrink-0 rounded-full border px-3 py-2 text-xs font-bold ${league === 'all' ? 'border-[hsl(var(--primary))] bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]' : 'border-[hsl(var(--border))] bg-[hsl(var(--card))] text-[hsl(var(--muted-foreground))]'}`}>All leagues</button>
         {(leagues.data ?? []).map((item: any) => <button type="button" key={item.id} onClick={() => setLeague(item.id)} className={`flex shrink-0 items-center gap-2 rounded-full border px-3 py-2 text-xs font-bold ${league === item.id ? 'border-[hsl(var(--primary))] bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]' : 'border-[hsl(var(--border))] bg-[hsl(var(--card))] text-[hsl(var(--muted-foreground))]'}`}><span className="h-2 w-2 rounded-full" style={{ backgroundColor: item.accent }} />{item.shortName}</button>)}
-      </div>
-      {section === 'leagues' && <div className="space-y-10">
+       </div>}
+      {section === 'overview' && <div className="space-y-10">
         <LeagueGroup title="Domestic leagues" detail="Follow the regular season competitions in each country." items={domesticLeagues} />
         <LeagueGroup title="Competition leagues" detail="Follow continental and international tournaments." items={competitionLeagues} />
       </div>}
+      {section === 'priority' && <LeagueGroup title="Priority competitions" detail="The competitions most useful to keep close, with room for user-selected favorites." items={priorityLeagues} />}
+      {section === 'championships' && <LeagueGroup title="Major championships" detail="International and continental tournaments across the football calendar." items={competitionLeagues} />}
+      {section === 'continents' && <div className="grid gap-4 md:grid-cols-2">{continents.map((continent) => { const items = (leagues.data ?? []).filter((item: any) => continent.countries.includes(item.country)); return <button type="button" key={continent.id} onClick={() => setSection('overview')} className="card-surface match-row rounded-xl p-5 text-left"><div className="mb-5 flex items-start justify-between"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[hsl(var(--primary)/.1)] text-[hsl(var(--primary))]"><Globe2 size={19} /></span><span className="label-mono text-[hsl(var(--muted-foreground))]">{items.length} competitions</span></div><p className="display-font text-2xl font-bold">{continent.label}</p><p className="mt-1 text-sm text-[hsl(var(--muted-foreground))]">{continent.detail}</p><div className="mt-5 flex flex-wrap gap-1.5">{items.slice(0, 6).map((item: any) => <span key={item.id} className="rounded-full border border-[hsl(var(--border))] px-2.5 py-1 font-mono text-[10px] text-[hsl(var(--muted-foreground))]">{item.shortName}</span>)}{items.length > 6 && <span className="rounded-full bg-[hsl(var(--muted))] px-2.5 py-1 font-mono text-[10px] text-[hsl(var(--muted-foreground))]">+{items.length - 6} more</span>}</div></button>; })}</div>}
       {section === 'teams' && <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{(teams.data ?? []).map((item: any) => <div key={item.id} className="card-surface rounded-xl p-5"><div className="flex items-start justify-between"><div><p className="display-font text-lg font-bold">{item.name}</p><p className="mt-1 text-xs text-[hsl(var(--muted-foreground))]">{item.leagueName}</p></div><span className="font-mono text-2xl font-bold text-[hsl(var(--primary))]">#{item.position}</span></div><div className="mt-5 flex items-center justify-between"><span className="label-mono text-[hsl(var(--muted-foreground))]">Recent form</span><div className="flex gap-1.5">{item.form.map((result: string, index: number) => <span key={`${item.id}-${index}`} className={`flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold ${result === 'W' ? 'bg-[hsl(var(--primary)/.13)] text-[hsl(var(--primary))]' : result === 'D' ? 'bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))]' : 'bg-[hsl(var(--accent)/.13)] text-[hsl(var(--accent))]'}`}>{result}</span>)}</div></div></div>)}</div>}
       {section === 'players' && <div className="card-surface overflow-hidden rounded-xl"><div className="hidden grid-cols-[1fr_120px_90px_90px_90px] gap-4 border-b border-[hsl(var(--border))] px-5 py-3 label-mono text-[hsl(var(--muted-foreground))] sm:grid"><span>Player</span><span>League</span><span>Apps</span><span>Goals</span><span>Rating</span></div>{(players.data ?? []).map((item: any) => <div key={item.id} className="grid gap-3 border-b border-[hsl(var(--border))] px-5 py-4 last:border-0 sm:grid-cols-[1fr_120px_90px_90px_90px] sm:items-center sm:gap-4"><div className="flex items-center gap-3"><span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[hsl(var(--primary)/.1)] text-[hsl(var(--primary))]"><Users size={16} /></span><div><p className="font-bold">{item.name}</p><p className="text-xs text-[hsl(var(--muted-foreground))]">{item.teamName} · {item.position}</p></div></div><span className="text-xs text-[hsl(var(--muted-foreground))] sm:text-sm">{item.leagueName}</span><span className="text-xs font-semibold sm:text-sm">{item.appearances} apps</span><span className="text-xs font-semibold sm:text-sm">{item.goals} goals</span><span className="font-mono text-sm text-[hsl(var(--primary))]">{item.rating.toFixed(1)}</span></div>)}</div>}
       {section === 'live' && <div className="space-y-3">{(liveMatches.data ?? []).map((item: any) => <MatchRow key={item.id} match={item} onAlert={() => undefined} />)}{!liveMatches.data?.length && <EmptyState title="No live games right now" detail="When a match starts, it will appear here with its score and minute." />}</div>}

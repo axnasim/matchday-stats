@@ -49,6 +49,7 @@ import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
+import PremierLeaguePage from '@/pages/premier-league';
 import './index.css';
 
 const queryClient = new QueryClient();
@@ -241,7 +242,7 @@ function LeagueLogo({ league, size = 'card' }: { league: any; size?: 'card' | 'c
 function LeagueGroup({ title, detail, items }: { title: string; detail: string; items: any[] }) {
   return <section>
     <div className="mb-4"><p className="display-font text-2xl font-bold">{title}</p><p className="mt-1 text-sm text-[hsl(var(--muted-foreground))]">{detail}</p></div>
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{items.map((item: any) => <Link href={`/soccer?league=${item.id}`} key={item.id} className="card-surface match-row rounded-xl p-5"><div className="flex items-center gap-3"><LeagueLogo league={item} /><div className="min-w-0 flex-1"><p className="display-font text-lg font-bold leading-tight">{item.name}</p><p className="mt-1 label-mono text-[hsl(var(--muted-foreground))]">{item.country}</p></div></div><p className="mt-4 text-xs text-[hsl(var(--muted-foreground))]">View teams, players, fixtures, and stats</p></Link>)}</div>
+     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{items.map((item: any) => <Link href={item.id === 'premier-league' ? '/soccer/leagues/premier-league' : `/soccer?league=${item.id}`} key={item.id} className="card-surface match-row rounded-xl p-5"><div className="flex items-center gap-3"><LeagueLogo league={item} /><div className="min-w-0 flex-1"><p className="display-font text-lg font-bold leading-tight">{item.name}</p><p className="mt-1 label-mono text-[hsl(var(--muted-foreground))]">{item.country}</p></div></div><p className="mt-4 text-xs text-[hsl(var(--muted-foreground))]">View teams, players, fixtures, and stats</p></Link>)}</div>
   </section>;
 }
 
@@ -369,7 +370,7 @@ function SettingsPage() {
 
 function Router() {
   const [location] = useLocation();
-  return <AppShell><ErrorBoundary resetKey={location}><Switch><Route path="/" component={Dashboard} /><Route path="/soccer/stats" component={SoccerStatsPage} /><Route path="/soccer" component={SoccerHub} /><Route path="/alerts" component={AlertsPage} /><Route path="/settings" component={SettingsPage} /><Route component={NotFound} /></Switch></ErrorBoundary></AppShell>;
+  return <AppShell><ErrorBoundary resetKey={location}><Switch><Route path="/" component={Dashboard} /><Route path="/soccer/stats" component={SoccerStatsPage} /><Route path="/soccer/leagues/:leagueId" component={PremierLeaguePage} /><Route path="/soccer" component={SoccerHub} /><Route path="/alerts" component={AlertsPage} /><Route path="/settings" component={SettingsPage} /><Route component={NotFound} /></Switch></ErrorBoundary></AppShell>;
 }
 
 function App() {

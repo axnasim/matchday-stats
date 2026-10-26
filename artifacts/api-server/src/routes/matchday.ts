@@ -6,8 +6,14 @@ import {
   GetOverviewResponse,
   ListAlertsResponse,
   ListLeaguesResponse,
+  ListSoccerLeadersQueryParams,
+  ListSoccerLeadersResponse,
   ListSoccerPlayersQueryParams,
   ListSoccerPlayersResponse,
+  ListSoccerSquadsQueryParams,
+  ListSoccerSquadsResponse,
+  ListSoccerStandingsQueryParams,
+  ListSoccerStandingsResponse,
   ListSoccerStatsQueryParams,
   ListSoccerStatsResponse,
   ListSoccerTeamsQueryParams,
@@ -15,6 +21,7 @@ import {
   ListMatchesQueryParams,
   ListMatchesResponse,
 } from "@workspace/api-zod";
+import { premierLeagueSnapshot } from "../data/premier-league-snapshot.js";
 
 const router: IRouter = Router();
 
@@ -115,8 +122,7 @@ const matches: Match[] = [
 ];
 
 const soccerTeams = [
-  { id: "arsenal", name: "Arsenal", shortName: "Arsenal", leagueId: "premier-league", leagueName: "Premier League", country: "England", position: 1, form: ["W", "W", "D", "W", "W"] },
-  { id: "liverpool", name: "Liverpool", shortName: "Liverpool", leagueId: "premier-league", leagueName: "Premier League", country: "England", position: 2, form: ["W", "W", "W", "L", "W"] },
+  ...premierLeagueSnapshot.teams,
   { id: "bayern", name: "Bayern Munich", shortName: "Bayern", leagueId: "bundesliga", leagueName: "Bundesliga", country: "Germany", position: 1, form: ["W", "W", "W", "D", "W"] },
   { id: "dortmund", name: "Dortmund", shortName: "Dortmund", leagueId: "bundesliga", leagueName: "Bundesliga", country: "Germany", position: 3, form: ["W", "D", "W", "W", "L"] },
   { id: "barcelona", name: "Barcelona", shortName: "Barcelona", leagueId: "la-liga", leagueName: "La Liga", country: "Spain", position: 1, form: ["W", "W", "W", "W", "D"] },
@@ -189,6 +195,58 @@ router.get("/soccer/teams", (req, res) => {
     ? soccerTeams.filter((item) => item.leagueId === params.leagueId)
     : soccerTeams;
   res.json(ListSoccerTeamsResponse.parse(result));
+});
+
+router.get("/soccer/standings", (req, res) => {
+  const params = ListSoccerStandingsQueryParams.parse(req.query);
+  if (params.leagueId !== "premier-league") {
+    res.status(404).json({ error: "Standings are not available for this league." });
+    return;
+  }
+  res.json(ListSoccerStandingsResponse.parse({
+    leagueId: "premier-league",
+    leagueName: "Premier League",
+    season: premierLeagueSnapshot.season,
+    asOf: premierLeagueSnapshot.asOf,
+    source: premierLeagueSnapshot.source,
+    standings: premierLeagueSnapshot.standings,
+  }));
+});
+
+router.get("/soccer/squads", (req, res) => {
+  const params = ListSoccerSquadsQueryParams.parse(req.query);
+  if (params.leagueId !== "premier-league") {
+    res.status(404).json({ error: "Squad data is not available for this league." });
+    return;
+  }
+  const players = params.teamId
+    ? premierLeagueSnapshot.squads.filter((player) => player.teamId === params.teamId)
+    : premierLeagueSnapshot.squads;
+  res.json(ListSoccerSquadsResponse.parse({
+    leagueId: "premier-league",
+    leagueName: "Premier League",
+    season: premierLeagueSnapshot.season,
+    asOf: premierLeagueSnapshot.asOf,
+    source: premierLeagueSnapshot.source,
+    players,
+  }));
+});
+
+router.get("/soccer/leaders", (req, res) => {
+  const params = ListSoccerLeadersQueryParams.parse(req.query);
+  if (params.leagueId !== "premier-league") {
+    res.status(404).json({ error: "Player leaders are not available for this league." });
+    return;
+  }
+  res.json(ListSoccerLeadersResponse.parse({
+    leagueId: "premier-league",
+    leagueName: "Premier League",
+    season: premierLeagueSnapshot.season,
+    asOf: premierLeagueSnapshot.asOf,
+    source: premierLeagueSnapshot.source,
+    category: params.category,
+    players: premierLeagueSnapshot.leaders.filter((player) => player.category === params.category),
+  }));
 });
 
 router.get("/soccer/players", (req, res) => {

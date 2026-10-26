@@ -159,6 +159,72 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/SoccerTeam"
+  /soccer/standings:
+    get:
+      operationId: listSoccerStandings
+      tags: [soccer]
+      summary: Get a league standings snapshot
+      parameters:
+        - name: leagueId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: League standings snapshot
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoccerStandingsResponse"
+  /soccer/squads:
+    get:
+      operationId: listSoccerSquads
+      tags: [soccer]
+      summary: List registered players in a league squad
+      parameters:
+        - name: leagueId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: teamId
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: League squad snapshot
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoccerSquadsResponse"
+  /soccer/leaders:
+    get:
+      operationId: listSoccerLeaders
+      tags: [soccer]
+      summary: List leaders for a league stat category
+      parameters:
+        - name: leagueId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [goals, assists]
+            default: goals
+      responses:
+        "200":
+          description: Player leaderboard snapshot
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoccerLeadersResponse"
   /soccer/players:
     get:
       operationId: listSoccerPlayers
@@ -364,6 +430,151 @@ components:
           items:
             type: string
             enum: [W, D, L]
+        badgeUrl:
+          type: string
+          format: uri
+    SoccerStanding:
+      type: object
+      required: [rank, teamId, teamName, played, wins, draws, losses, goalsFor, goalsAgainst, goalDifference, points, form, badgeUrl]
+      properties:
+        rank:
+          type: integer
+        teamId:
+          type: string
+        teamName:
+          type: string
+        played:
+          type: integer
+        wins:
+          type: integer
+        draws:
+          type: integer
+        losses:
+          type: integer
+        goalsFor:
+          type: integer
+        goalsAgainst:
+          type: integer
+        goalDifference:
+          type: integer
+        points:
+          type: integer
+        form:
+          type: array
+          items:
+            type: string
+            enum: [W, D, L]
+        badgeUrl:
+          type: string
+          format: uri
+    SoccerSquadPlayer:
+      type: object
+      required: [id, name, teamId, teamName, leagueId, leagueName, position, shirtNumber, nationality, photoUrl, teamBadgeUrl]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        teamId:
+          type: string
+        teamName:
+          type: string
+        leagueId:
+          type: string
+        leagueName:
+          type: string
+        position:
+          type: string
+          enum: [Goalkeepers, Defenders, Midfielders, Forwards]
+        shirtNumber:
+          type: integer
+        nationality:
+          type: string
+        photoUrl:
+          type: string
+          format: uri
+        teamBadgeUrl:
+          type: string
+          format: uri
+    SoccerPlayerLeader:
+      type: object
+      required: [category, rank, playerId, playerName, teamId, teamName, value]
+      properties:
+        category:
+          type: string
+          enum: [goals, assists]
+        rank:
+          type: integer
+        playerId:
+          type: string
+        playerName:
+          type: string
+        teamId:
+          type: string
+        teamName:
+          type: string
+        value:
+          type: integer
+    SoccerStandingsResponse:
+      type: object
+      required: [leagueId, leagueName, season, asOf, source, standings]
+      properties:
+        leagueId:
+          type: string
+        leagueName:
+          type: string
+        season:
+          type: string
+        asOf:
+          type: string
+          format: date
+        source:
+          type: string
+        standings:
+          type: array
+          items:
+            $ref: "#/components/schemas/SoccerStanding"
+    SoccerSquadsResponse:
+      type: object
+      required: [leagueId, leagueName, season, asOf, source, players]
+      properties:
+        leagueId:
+          type: string
+        leagueName:
+          type: string
+        season:
+          type: string
+        asOf:
+          type: string
+          format: date
+        source:
+          type: string
+        players:
+          type: array
+          items:
+            $ref: "#/components/schemas/SoccerSquadPlayer"
+    SoccerLeadersResponse:
+      type: object
+      required: [leagueId, leagueName, season, asOf, source, category, players]
+      properties:
+        leagueId:
+          type: string
+        leagueName:
+          type: string
+        season:
+          type: string
+        asOf:
+          type: string
+          format: date
+        source:
+          type: string
+        category:
+          type: string
+          enum: [goals, assists]
+        players:
+          type: array
+          items:
+            $ref: "#/components/schemas/SoccerPlayerLeader"
     SoccerPlayer:
       type: object
       required: [id, name, teamId, teamName, leagueId, leagueName, position, appearances, goals, assists, rating]

@@ -25,13 +25,19 @@ import type {
   HealthStatus,
   League,
   ListMatchesParams,
+  ListSoccerLeadersParams,
   ListSoccerPlayersParams,
+  ListSoccerSquadsParams,
+  ListSoccerStandingsParams,
   ListSoccerStatsParams,
   ListSoccerTeamsParams,
   Match,
   Overview,
   PlayerStat,
+  SoccerLeadersResponse,
   SoccerPlayer,
+  SoccerSquadsResponse,
+  SoccerStandingsResponse,
   SoccerTeam
 } from './api.schemas';
 
@@ -689,6 +695,258 @@ export function useListSoccerTeams<TData = Awaited<ReturnType<typeof listSoccerT
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
   const queryOptions = getListSoccerTeamsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getListSoccerStandingsUrl = (params: ListSoccerStandingsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/soccer/standings?${stringifiedParams}` : `/api/soccer/standings`
+}
+
+/**
+ * @summary Get a league standings snapshot
+ */
+export const listSoccerStandings = async (params: ListSoccerStandingsParams, options?: Parameters<typeof customFetch>[1]): Promise<SoccerStandingsResponse> => {
+
+  return customFetch<SoccerStandingsResponse>(getListSoccerStandingsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListSoccerStandingsQueryKey = (params?: ListSoccerStandingsParams,) => {
+    return [
+    `/api/soccer/standings`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListSoccerStandingsQueryOptions = <TData = Awaited<ReturnType<typeof listSoccerStandings>>, TError = ErrorType<unknown>>(params: ListSoccerStandingsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listSoccerStandings>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListSoccerStandingsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listSoccerStandings>>> = ({ signal }) => listSoccerStandings(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listSoccerStandings>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListSoccerStandingsQueryResult = NonNullable<Awaited<ReturnType<typeof listSoccerStandings>>>
+export type ListSoccerStandingsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Get a league standings snapshot
+ */
+
+export function useListSoccerStandings<TData = Awaited<ReturnType<typeof listSoccerStandings>>, TError = ErrorType<unknown>>(
+ params: ListSoccerStandingsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listSoccerStandings>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListSoccerStandingsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getListSoccerSquadsUrl = (params: ListSoccerSquadsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/soccer/squads?${stringifiedParams}` : `/api/soccer/squads`
+}
+
+/**
+ * @summary List registered players in a league squad
+ */
+export const listSoccerSquads = async (params: ListSoccerSquadsParams, options?: Parameters<typeof customFetch>[1]): Promise<SoccerSquadsResponse> => {
+
+  return customFetch<SoccerSquadsResponse>(getListSoccerSquadsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListSoccerSquadsQueryKey = (params?: ListSoccerSquadsParams,) => {
+    return [
+    `/api/soccer/squads`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListSoccerSquadsQueryOptions = <TData = Awaited<ReturnType<typeof listSoccerSquads>>, TError = ErrorType<unknown>>(params: ListSoccerSquadsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listSoccerSquads>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListSoccerSquadsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listSoccerSquads>>> = ({ signal }) => listSoccerSquads(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listSoccerSquads>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListSoccerSquadsQueryResult = NonNullable<Awaited<ReturnType<typeof listSoccerSquads>>>
+export type ListSoccerSquadsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List registered players in a league squad
+ */
+
+export function useListSoccerSquads<TData = Awaited<ReturnType<typeof listSoccerSquads>>, TError = ErrorType<unknown>>(
+ params: ListSoccerSquadsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listSoccerSquads>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListSoccerSquadsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getListSoccerLeadersUrl = (params: ListSoccerLeadersParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/soccer/leaders?${stringifiedParams}` : `/api/soccer/leaders`
+}
+
+/**
+ * @summary List leaders for a league stat category
+ */
+export const listSoccerLeaders = async (params: ListSoccerLeadersParams, options?: Parameters<typeof customFetch>[1]): Promise<SoccerLeadersResponse> => {
+
+  return customFetch<SoccerLeadersResponse>(getListSoccerLeadersUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListSoccerLeadersQueryKey = (params?: ListSoccerLeadersParams,) => {
+    return [
+    `/api/soccer/leaders`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListSoccerLeadersQueryOptions = <TData = Awaited<ReturnType<typeof listSoccerLeaders>>, TError = ErrorType<unknown>>(params: ListSoccerLeadersParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listSoccerLeaders>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListSoccerLeadersQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listSoccerLeaders>>> = ({ signal }) => listSoccerLeaders(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listSoccerLeaders>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListSoccerLeadersQueryResult = NonNullable<Awaited<ReturnType<typeof listSoccerLeaders>>>
+export type ListSoccerLeadersQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List leaders for a league stat category
+ */
+
+export function useListSoccerLeaders<TData = Awaited<ReturnType<typeof listSoccerLeaders>>, TError = ErrorType<unknown>>(
+ params: ListSoccerLeadersParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listSoccerLeaders>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListSoccerLeadersQueryOptions(params,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

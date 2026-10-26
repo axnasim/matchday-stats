@@ -168,9 +168,100 @@ export const ListSoccerTeamsResponseItem = zod.object({
   "leagueName": zod.string(),
   "country": zod.string(),
   "position": zod.number().int(),
-  "form": zod.array(zod.enum(['W', 'D', 'L']))
+  "form": zod.array(zod.enum(['W', 'D', 'L'])),
+  "badgeUrl": zod.string().url().optional()
 })
 export const ListSoccerTeamsResponse = zod.array(ListSoccerTeamsResponseItem)
+
+
+/**
+ * @summary Get a league standings snapshot
+ */
+export const ListSoccerStandingsQueryParams = zod.object({
+  "leagueId": zod.coerce.string()
+})
+
+export const ListSoccerStandingsResponse = zod.object({
+  "leagueId": zod.string(),
+  "leagueName": zod.string(),
+  "season": zod.string(),
+  "asOf": zod.coerce.date(),
+  "source": zod.string(),
+  "standings": zod.array(zod.object({
+  "rank": zod.number().int(),
+  "teamId": zod.string(),
+  "teamName": zod.string(),
+  "played": zod.number().int(),
+  "wins": zod.number().int(),
+  "draws": zod.number().int(),
+  "losses": zod.number().int(),
+  "goalsFor": zod.number().int(),
+  "goalsAgainst": zod.number().int(),
+  "goalDifference": zod.number().int(),
+  "points": zod.number().int(),
+  "form": zod.array(zod.enum(['W', 'D', 'L'])),
+  "badgeUrl": zod.string().url()
+}))
+})
+
+
+/**
+ * @summary List registered players in a league squad
+ */
+export const ListSoccerSquadsQueryParams = zod.object({
+  "leagueId": zod.coerce.string(),
+  "teamId": zod.coerce.string().optional()
+})
+
+export const ListSoccerSquadsResponse = zod.object({
+  "leagueId": zod.string(),
+  "leagueName": zod.string(),
+  "season": zod.string(),
+  "asOf": zod.coerce.date(),
+  "source": zod.string(),
+  "players": zod.array(zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "teamId": zod.string(),
+  "teamName": zod.string(),
+  "leagueId": zod.string(),
+  "leagueName": zod.string(),
+  "position": zod.enum(['Goalkeepers', 'Defenders', 'Midfielders', 'Forwards']),
+  "shirtNumber": zod.number().int(),
+  "nationality": zod.string(),
+  "photoUrl": zod.string().url(),
+  "teamBadgeUrl": zod.string().url()
+}))
+})
+
+
+/**
+ * @summary List leaders for a league stat category
+ */
+export const listSoccerLeadersQueryCategoryDefault = `goals`;
+
+export const ListSoccerLeadersQueryParams = zod.object({
+  "leagueId": zod.coerce.string(),
+  "category": zod.enum(['goals', 'assists']).default(listSoccerLeadersQueryCategoryDefault)
+})
+
+export const ListSoccerLeadersResponse = zod.object({
+  "leagueId": zod.string(),
+  "leagueName": zod.string(),
+  "season": zod.string(),
+  "asOf": zod.coerce.date(),
+  "source": zod.string(),
+  "category": zod.enum(['goals', 'assists']),
+  "players": zod.array(zod.object({
+  "category": zod.enum(['goals', 'assists']),
+  "rank": zod.number().int(),
+  "playerId": zod.string(),
+  "playerName": zod.string(),
+  "teamId": zod.string(),
+  "teamName": zod.string(),
+  "value": zod.number().int()
+}))
+})
 
 
 /**

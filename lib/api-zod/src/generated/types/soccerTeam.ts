@@ -16,4 +16,5 @@ export interface SoccerTeam {
   country: string;
   position: number;
   form: SoccerTeamFormItem[];
+  badgeUrl?: string;
 }

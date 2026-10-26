@@ -123,6 +123,110 @@ export interface SoccerTeam {
   country: string;
   position: number;
   form: SoccerTeamFormItem[];
+  badgeUrl?: string;
+}
+
+export type SoccerStandingFormItem = typeof SoccerStandingFormItem[keyof typeof SoccerStandingFormItem];
+
+
+export const SoccerStandingFormItem = {
+  W: 'W',
+  D: 'D',
+  L: 'L',
+} as const;
+
+export interface SoccerStanding {
+  rank: number;
+  teamId: string;
+  teamName: string;
+  played: number;
+  wins: number;
+  draws: number;
+  losses: number;
+  goalsFor: number;
+  goalsAgainst: number;
+  goalDifference: number;
+  points: number;
+  form: SoccerStandingFormItem[];
+  badgeUrl: string;
+}
+
+export type SoccerSquadPlayerPosition = typeof SoccerSquadPlayerPosition[keyof typeof SoccerSquadPlayerPosition];
+
+
+export const SoccerSquadPlayerPosition = {
+  Goalkeepers: 'Goalkeepers',
+  Defenders: 'Defenders',
+  Midfielders: 'Midfielders',
+  Forwards: 'Forwards',
+} as const;
+
+export interface SoccerSquadPlayer {
+  id: string;
+  name: string;
+  teamId: string;
+  teamName: string;
+  leagueId: string;
+  leagueName: string;
+  position: SoccerSquadPlayerPosition;
+  shirtNumber: number;
+  nationality: string;
+  photoUrl: string;
+  teamBadgeUrl: string;
+}
+
+export type SoccerPlayerLeaderCategory = typeof SoccerPlayerLeaderCategory[keyof typeof SoccerPlayerLeaderCategory];
+
+
+export const SoccerPlayerLeaderCategory = {
+  goals: 'goals',
+  assists: 'assists',
+} as const;
+
+export interface SoccerPlayerLeader {
+  category: SoccerPlayerLeaderCategory;
+  rank: number;
+  playerId: string;
+  playerName: string;
+  teamId: string;
+  teamName: string;
+  value: number;
+}
+
+export interface SoccerStandingsResponse {
+  leagueId: string;
+  leagueName: string;
+  season: string;
+  asOf: string;
+  source: string;
+  standings: SoccerStanding[];
+}
+
+export interface SoccerSquadsResponse {
+  leagueId: string;
+  leagueName: string;
+  season: string;
+  asOf: string;
+  source: string;
+  players: SoccerSquadPlayer[];
+}
+
+export type SoccerLeadersResponseCategory = typeof SoccerLeadersResponseCategory[keyof typeof SoccerLeadersResponseCategory];
+
+
+export const SoccerLeadersResponseCategory = {
+  goals: 'goals',
+  assists: 'assists',
+} as const;
+
+export interface SoccerLeadersResponse {
+  leagueId: string;
+  leagueName: string;
+  season: string;
+  asOf: string;
+  source: string;
+  category: SoccerLeadersResponseCategory;
+  players: SoccerPlayerLeader[];
 }
 
 export interface SoccerPlayer {
@@ -183,6 +287,28 @@ export const ListMatchesStatus = {
 export type ListSoccerTeamsParams = {
 leagueId?: string;
 };
+
+export type ListSoccerStandingsParams = {
+leagueId: string;
+};
+
+export type ListSoccerSquadsParams = {
+leagueId: string;
+teamId?: string;
+};
+
+export type ListSoccerLeadersParams = {
+leagueId: string;
+category?: ListSoccerLeadersCategory;
+};
+
+export type ListSoccerLeadersCategory = typeof ListSoccerLeadersCategory[keyof typeof ListSoccerLeadersCategory];
+
+
+export const ListSoccerLeadersCategory = {
+  goals: 'goals',
+  assists: 'assists',
+} as const;
 
 export type ListSoccerPlayersParams = {
 leagueId?: string;

@@ -295,6 +295,11 @@ router.get("/soccer/players", (req, res) => {
 
 router.get("/soccer/stats", (req, res) => {
   const params = ListSoccerStatsQueryParams.parse(req.query);
+  // Only the snapshot's season has figures; other seasons return an empty table.
+  if (params.season !== premierLeagueSnapshot.season) {
+    res.json(ListSoccerStatsResponse.parse([]));
+    return;
+  }
   const filtered = playerStats.filter((item) => !params.leagueId || item.leagueId === params.leagueId);
   const metric = params.category;
   const result = [...filtered]

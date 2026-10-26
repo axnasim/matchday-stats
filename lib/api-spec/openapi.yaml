@@ -353,7 +353,7 @@ components:
           type: string
     Overview:
       type: object
-      required: [liveCount, upcomingCount, finishedCount, trackedLeagueCount, nextMatch, lastUpdated]
+      required: [liveCount, upcomingCount, finishedCount, trackedLeagueCount, nextMatch, matchdayDate, lastUpdated]
       properties:
         liveCount:
           type: integer
@@ -367,6 +367,9 @@ components:
           allOf:
             - $ref: "#/components/schemas/Match"
           nullable: true
+        matchdayDate:
+          type: string
+          description: Date the sample fixture board represents, in YYYY-MM-DD format.
         lastUpdated:
           type: string
           format: date-time

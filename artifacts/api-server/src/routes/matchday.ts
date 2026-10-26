@@ -103,23 +103,27 @@ const match = (
   };
 };
 
+// Sample fixtures are anchored to the Premier League snapshot date so they agree with its
+// table: every club has played 8, so Matchweek 9 fixtures stay unplayed on this board.
+const matchdayDate = premierLeagueSnapshot.asOf;
+
 const matches: Match[] = [
-  match("pl-ars-che", "premier-league", "2026-09-12T11:30:00.000Z", "UPCOMING", team("Arsenal", "Arsenal", "AR"), team("Chelsea", "Chelsea", "CH"), { venue: "Emirates Stadium", round: "Matchweek 5" }),
-  match("pl-liv-bri", "premier-league", "2026-09-13T15:00:00.000Z", "UPCOMING", team("Liverpool", "Liverpool", "LI"), team("Brighton", "Brighton", "BR"), { venue: "Anfield", round: "Matchweek 5" }),
-  match("sa-int-juv", "serie-a", "2026-09-12T18:45:00.000Z", "UPCOMING", team("Inter", "Inter", "IN"), team("Juventus", "Juventus", "JU"), { venue: "San Siro", round: "Matchday 4" }),
-  match("bl-bay-dor", "bundesliga", "2026-09-12T13:30:00.000Z", "LIVE", team("Bayern Munich", "Bayern", "BM"), team("Dortmund", "Dortmund", "DO"), { venue: "Allianz Arena", round: "Matchday 4", minute: 67, homeScore: 2, awayScore: 1 }),
-  match("ll-bar-atm", "la-liga", "2026-09-13T19:00:00.000Z", "UPCOMING", team("Barcelona", "Barcelona", "BA"), team("Atlético Madrid", "Atlético", "AM"), { venue: "Camp Nou", round: "Matchday 5" }),
-  match("l1-psg-om", "ligue-1", "2026-09-12T19:00:00.000Z", "UPCOMING", team("Paris Saint-Germain", "PSG", "PS"), team("Marseille", "Marseille", "OM"), { venue: "Parc des Princes", round: "Matchday 5" }),
-  match("br-fla-pal", "brasileirao", "2026-09-12T22:30:00.000Z", "UPCOMING", team("Flamengo", "Flamengo", "FL"), team("Palmeiras", "Palmeiras", "PA"), { venue: "Maracanã", round: "Round 24" }),
-  match("lp-ben-por", "liga-portugal", "2026-09-13T17:00:00.000Z", "UPCOMING", team("Benfica", "Benfica", "BE"), team("Porto", "Porto", "PO"), { venue: "Estádio da Luz", round: "Matchday 6" }),
-  match("bpl-bru-gen", "belgian-pro-league", "2026-09-12T16:15:00.000Z", "FT", team("Club Brugge", "Brugge", "CB"), team("Genk", "Genk", "GE"), { venue: "Jan Breydel Stadium", round: "Matchday 7", homeScore: 1, awayScore: 1 }),
-  match("mls-laf-sea", "mls", "2026-09-13T02:30:00.000Z", "UPCOMING", team("LAFC", "LAFC", "LA"), team("Seattle Sounders", "Seattle", "SS"), { venue: "BMO Stadium", round: "Week 29" }),
-  match("spl-nas-hil", "saudi-pro-league", "2026-09-12T17:00:00.000Z", "LIVE", team("Al Nassr", "Al Nassr", "AN"), team("Al Hilal", "Al Hilal", "AH"), { venue: "Al-Awwal Park", round: "Matchday 4", minute: 34, homeScore: 0, awayScore: 1 }),
-  match("j1-kaw-urawa", "j1-league", "2026-09-13T06:00:00.000Z", "UPCOMING", team("Kawasaki Frontale", "Kawasaki", "KF"), team("Urawa Reds", "Urawa", "UR"), { venue: "Todoroki Stadium", round: "Matchweek 29" }),
-  match("kl1-uls-jeo", "k-league-1", "2026-09-13T10:00:00.000Z", "UPCOMING", team("Ulsan HD", "Ulsan", "UL"), team("Jeonbuk Motors", "Jeonbuk", "JM"), { venue: "Ulsan Munsu Stadium", round: "Round 30" }),
-  match("pl-mci-tot", "premier-league", "2026-09-11T19:00:00.000Z", "FT", team("Man City", "Man City", "MC"), team("Tottenham", "Spurs", "TO"), { venue: "Etihad Stadium", round: "Matchweek 4", homeScore: 3, awayScore: 2 }),
-  match("sa-mil-rom", "serie-a", "2026-09-10T18:45:00.000Z", "FT", team("AC Milan", "Milan", "MI"), team("Roma", "Roma", "RO"), { venue: "San Siro", round: "Matchday 3", homeScore: 2, awayScore: 0 }),
-  match("ll-mad-sev", "la-liga", "2026-09-10T20:00:00.000Z", "FT", team("Real Madrid", "Real Madrid", "RM"), team("Sevilla", "Sevilla", "SE"), { venue: "Santiago Bernabéu", round: "Matchday 4", homeScore: 1, awayScore: 1 }),
+  match("pl-ars-liv", "premier-league", "2026-10-25T15:30:00.000Z", "UPCOMING", team("Arsenal", "Arsenal", "AR"), team("Liverpool", "Liverpool", "LI"), { venue: "Emirates Stadium", round: "Matchweek 9" }),
+  match("pl-che-mci", "premier-league", "2026-10-25T16:00:00.000Z", "UPCOMING", team("Chelsea", "Chelsea", "CH"), team("Manchester City", "Man City", "MC"), { venue: "Stamford Bridge", round: "Matchweek 9" }),
+  match("pl-bha-new", "premier-league", "2026-10-26T20:00:00.000Z", "UPCOMING", team("Brighton & Hove Albion", "Brighton", "BR"), team("Newcastle United", "Newcastle", "NE"), { venue: "American Express Stadium", round: "Matchweek 9" }),
+  match("sa-int-juv", "serie-a", "2026-10-25T19:45:00.000Z", "UPCOMING", team("Internazionale", "Inter", "IN"), team("Juventus", "Juventus", "JU"), { venue: "San Siro", round: "Matchday 8" }),
+  match("bl-bay-dor", "bundesliga", "2026-10-25T13:30:00.000Z", "LIVE", team("Bayern Munich", "Bayern", "BM"), team("Borussia Dortmund", "Dortmund", "DO"), { venue: "Allianz Arena", round: "Matchday 8", minute: 67, homeScore: 2, awayScore: 1 }),
+  match("ll-bar-atm", "la-liga", "2026-10-25T20:00:00.000Z", "UPCOMING", team("Barcelona", "Barcelona", "BA"), team("Atlético Madrid", "Atlético", "AM"), { venue: "Camp Nou", round: "Matchday 10" }),
+  match("l1-psg-om", "ligue-1", "2026-10-25T19:45:00.000Z", "UPCOMING", team("Paris Saint-Germain", "PSG", "PS"), team("Marseille", "Marseille", "OM"), { venue: "Parc des Princes", round: "Matchday 9" }),
+  match("br-fla-pal", "brasileirao", "2026-10-25T22:30:00.000Z", "UPCOMING", team("Flamengo", "Flamengo", "FL"), team("Palmeiras", "Palmeiras", "PA"), { venue: "Maracanã", round: "Round 31" }),
+  match("lp-ben-por", "liga-portugal", "2026-10-25T18:30:00.000Z", "UPCOMING", team("Benfica", "Benfica", "BE"), team("FC Porto", "Porto", "PO"), { venue: "Estádio da Luz", round: "Matchday 8" }),
+  match("bpl-bru-gen", "belgian-pro-league", "2026-10-25T11:30:00.000Z", "FT", team("Club Brugge", "Brugge", "CB"), team("Racing Genk", "Genk", "GE"), { venue: "Jan Breydel Stadium", round: "Matchday 12", homeScore: 1, awayScore: 1 }),
+  match("mls-laf-sea", "mls", "2026-10-26T02:30:00.000Z", "UPCOMING", team("LAFC", "LAFC", "LA"), team("Seattle Sounders FC", "Seattle", "SS"), { venue: "BMO Stadium", round: "Regular season" }),
+  match("spl-nas-hil", "saudi-pro-league", "2026-10-25T14:00:00.000Z", "LIVE", team("Al Nassr", "Al Nassr", "AN"), team("Al Hilal", "Al Hilal", "AH"), { venue: "Al-Awwal Park", round: "Matchday 7", minute: 41, homeScore: 0, awayScore: 1 }),
+  match("j1-kaw-urawa", "j1-league", "2026-10-25T05:00:00.000Z", "FT", team("Kawasaki Frontale", "Kawasaki", "KF"), team("Urawa Red Diamonds", "Urawa", "UR"), { venue: "Todoroki Stadium", round: "Matchweek 11", homeScore: 2, awayScore: 0 }),
+  match("kl1-uls-jeo", "k-league-1", "2026-10-25T05:00:00.000Z", "FT", team("Ulsan HD", "Ulsan", "UL"), team("Jeonbuk Hyundai Motors", "Jeonbuk", "JM"), { venue: "Ulsan Munsu Stadium", round: "Round 35", homeScore: 1, awayScore: 2 }),
+  match("sa-mil-rom", "serie-a", "2026-10-19T18:45:00.000Z", "FT", team("AC Milan", "Milan", "MI"), team("AS Roma", "Roma", "RO"), { venue: "San Siro", round: "Matchday 7", homeScore: 2, awayScore: 0 }),
+  match("ll-mad-sev", "la-liga", "2026-10-19T19:00:00.000Z", "FT", team("Real Madrid", "Real Madrid", "RM"), team("Sevilla", "Sevilla", "SE"), { venue: "Santiago Bernabéu", round: "Matchday 9", homeScore: 1, awayScore: 1 }),
 ];
 
 const soccerTeams = [
@@ -145,17 +149,22 @@ const soccerTeams = [
   }),
 ];
 
+// Premier League goals and assists match the snapshot leaderboards where a player appears on them;
+// every other figure here is sample data sized to the same point in the season.
 const playerStats = [
-  { playerId: "saka", playerName: "Bukayo Saka", teamName: "Arsenal", leagueId: "premier-league", leagueName: "Premier League", position: "FW", appearances: 5, goals: 5, assists: 3, minutes: 438, cleanSheets: 0, cards: 1, rating: 8.4 },
-  { playerId: "salah", playerName: "Mohamed Salah", teamName: "Liverpool", leagueId: "premier-league", leagueName: "Premier League", position: "FW", appearances: 5, goals: 4, assists: 4, minutes: 447, cleanSheets: 0, cards: 0, rating: 8.2 },
-  { playerId: "kane", playerName: "Harry Kane", teamName: "Bayern Munich", leagueId: "bundesliga", leagueName: "Bundesliga", position: "FW", appearances: 4, goals: 6, assists: 2, minutes: 359, cleanSheets: 0, cards: 0, rating: 8.6 },
-  { playerId: "musiala", playerName: "Jamal Musiala", teamName: "Bayern Munich", leagueId: "bundesliga", leagueName: "Bundesliga", position: "MF", appearances: 4, goals: 3, assists: 3, minutes: 326, cleanSheets: 0, cards: 1, rating: 8.1 },
-  { playerId: "yamal", playerName: "Lamine Yamal", teamName: "Barcelona", leagueId: "la-liga", leagueName: "La Liga", position: "FW", appearances: 5, goals: 4, assists: 5, minutes: 421, cleanSheets: 0, cards: 1, rating: 8.5 },
-  { playerId: "thuram", playerName: "Marcus Thuram", teamName: "Inter", leagueId: "serie-a", leagueName: "Serie A", position: "FW", appearances: 4, goals: 4, assists: 2, minutes: 348, cleanSheets: 0, cards: 0, rating: 8.0 },
-  { playerId: "bouanga", playerName: "Denis Bouanga", teamName: "Los Angeles FC", leagueId: "mls", leagueName: "Major League Soccer", position: "FW", appearances: 5, goals: 5, assists: 2, minutes: 452, cleanSheets: 0, cards: 1, rating: 8.3 },
-  { playerId: "pedro", playerName: "Pedro", teamName: "Flamengo", leagueId: "brasileirao", leagueName: "Brasileirão", position: "FW", appearances: 5, goals: 6, assists: 1, minutes: 431, cleanSheets: 0, cards: 0, rating: 8.5 },
-  { playerId: "raya", playerName: "David Raya", teamName: "Arsenal", leagueId: "premier-league", leagueName: "Premier League", position: "GK", appearances: 5, goals: 0, assists: 0, minutes: 450, cleanSheets: 3, cards: 0, rating: 7.8 },
-  { playerId: "sommer", playerName: "Yann Sommer", teamName: "Inter", leagueId: "serie-a", leagueName: "Serie A", position: "GK", appearances: 4, goals: 0, assists: 0, minutes: 360, cleanSheets: 3, cards: 0, rating: 7.9 },
+  { playerId: "haaland", playerName: "Erling Haaland", teamName: "Manchester City", leagueId: "premier-league", leagueName: "Premier League", position: "FW", appearances: 8, goals: 9, assists: 1, minutes: 702, cleanSheets: 0, cards: 1, rating: 8.7 },
+  { playerId: "joao-pedro", playerName: "João Pedro", teamName: "Chelsea", leagueId: "premier-league", leagueName: "Premier League", position: "FW", appearances: 8, goals: 5, assists: 3, minutes: 671, cleanSheets: 0, cards: 2, rating: 8.1 },
+  { playerId: "isak", playerName: "Alexander Isak", teamName: "Liverpool", leagueId: "premier-league", leagueName: "Premier League", position: "FW", appearances: 7, goals: 5, assists: 1, minutes: 548, cleanSheets: 0, cards: 0, rating: 7.8 },
+  { playerId: "rice", playerName: "Declan Rice", teamName: "Arsenal", leagueId: "premier-league", leagueName: "Premier League", position: "MF", appearances: 8, goals: 1, assists: 4, minutes: 715, cleanSheets: 0, cards: 2, rating: 7.9 },
+  { playerId: "saka", playerName: "Bukayo Saka", teamName: "Arsenal", leagueId: "premier-league", leagueName: "Premier League", position: "FW", appearances: 8, goals: 2, assists: 2, minutes: 664, cleanSheets: 0, cards: 1, rating: 7.8 },
+  { playerId: "raya", playerName: "David Raya", teamName: "Arsenal", leagueId: "premier-league", leagueName: "Premier League", position: "GK", appearances: 8, goals: 0, assists: 0, minutes: 720, cleanSheets: 4, cards: 0, rating: 7.6 },
+  { playerId: "kane", playerName: "Harry Kane", teamName: "Bayern Munich", leagueId: "bundesliga", leagueName: "Bundesliga", position: "FW", appearances: 7, goals: 11, assists: 3, minutes: 612, cleanSheets: 0, cards: 0, rating: 8.6 },
+  { playerId: "musiala", playerName: "Jamal Musiala", teamName: "Bayern Munich", leagueId: "bundesliga", leagueName: "Bundesliga", position: "MF", appearances: 7, goals: 4, assists: 4, minutes: 541, cleanSheets: 0, cards: 1, rating: 8.0 },
+  { playerId: "yamal", playerName: "Lamine Yamal", teamName: "Barcelona", leagueId: "la-liga", leagueName: "La Liga", position: "FW", appearances: 9, goals: 6, assists: 7, minutes: 748, cleanSheets: 0, cards: 1, rating: 8.4 },
+  { playerId: "thuram", playerName: "Marcus Thuram", teamName: "Internazionale", leagueId: "serie-a", leagueName: "Serie A", position: "FW", appearances: 7, goals: 6, assists: 2, minutes: 583, cleanSheets: 0, cards: 0, rating: 7.9 },
+  { playerId: "bouanga", playerName: "Denis Bouanga", teamName: "LAFC", leagueId: "mls", leagueName: "Major League Soccer", position: "FW", appearances: 31, goals: 19, assists: 6, minutes: 2604, cleanSheets: 0, cards: 3, rating: 8.2 },
+  { playerId: "pedro", playerName: "Pedro", teamName: "Flamengo", leagueId: "brasileirao", leagueName: "Brasileirão", position: "FW", appearances: 26, goals: 16, assists: 4, minutes: 2017, cleanSheets: 0, cards: 2, rating: 8.3 },
+  { playerId: "sommer", playerName: "Yann Sommer", teamName: "Internazionale", leagueId: "serie-a", leagueName: "Serie A", position: "GK", appearances: 7, goals: 0, assists: 0, minutes: 630, cleanSheets: 3, cards: 0, rating: 7.5 },
 ];
 
 type Alert = {
@@ -196,7 +205,7 @@ router.get("/matches", (req, res) => {
     result = result.filter((item) => item.status === status);
   }
   if (params.dateRange === "today") {
-    result = result.filter((item) => item.kickoff.startsWith("2026-09-12"));
+    result = result.filter((item) => item.kickoff.startsWith(matchdayDate));
   }
 
   result.sort((a, b) => new Date(a.kickoff).getTime() - new Date(b.kickoff).getTime());
@@ -302,6 +311,7 @@ router.get("/overview", (_req, res) => {
     finishedCount: matches.filter((item) => item.status === "FT").length,
     trackedLeagueCount: leagues.length,
     nextMatch: upcoming.sort((a, b) => new Date(a.kickoff).getTime() - new Date(b.kickoff).getTime())[0] ?? null,
+    matchdayDate,
     lastUpdated: new Date().toISOString(),
   };
   res.json(GetOverviewResponse.parse(overview));

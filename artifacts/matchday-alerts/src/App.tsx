@@ -26,7 +26,7 @@ import {
   Users,
   X,
 } from 'lucide-react';
-import { Link, Route, Switch, useLocation } from 'wouter';
+import { Link, Route, Switch, useLocation, useSearch } from 'wouter';
 import {
   getGetOverviewQueryKey,
   getListAlertsQueryKey,
@@ -46,6 +46,7 @@ import {
   useListSoccerTeams,
 } from '@workspace/api-client-react';
 import { ErrorBoundary } from '@/components/error-boundary';
+import { TeamDirectory } from '@/components/team-directory';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
@@ -250,11 +251,14 @@ type SoccerSection = 'overview' | 'priority' | 'championships' | 'continents' | 
 type StatCategory = 'goals' | 'assists' | 'appearances' | 'minutes' | 'rating' | 'cleanSheets' | 'cards';
 
 function SoccerHub() {
-  const [location] = useLocation();
-  const routeLeague = new URLSearchParams(location.split('?')[1] ?? '').get('league') ?? 'all';
-  const [section, setSection] = useState<SoccerSection>('overview');
+  const search = useSearch();
+  const routeLeague = new URLSearchParams(search).get('league') ?? 'all';
+  const [section, setSection] = useState<SoccerSection>(routeLeague === 'all' ? 'overview' : 'teams');
   const [league, setLeague] = useState(routeLeague);
-  useEffect(() => setLeague(routeLeague), [routeLeague]);
+  useEffect(() => {
+    setLeague(routeLeague);
+    if (routeLeague !== 'all') setSection('teams');
+  }, [routeLeague]);
   const leagues = useListLeagues({ query: { queryKey: getListLeaguesQueryKey() } });
   const leagueParams = league === 'all' ? undefined : { leagueId: league };
   const teams = useListSoccerTeams(leagueParams, { query: { queryKey: getListSoccerTeamsQueryKey(leagueParams) } });
@@ -303,7 +307,7 @@ function SoccerHub() {
       {section === 'priority' && <LeagueGroup title="Priority competitions" detail="The competitions most useful to keep close, with room for user-selected favorites." items={priorityLeagues} />}
       {section === 'championships' && <LeagueGroup title="Major championships" detail="International and continental tournaments across the football calendar." items={competitionLeagues} />}
       {section === 'continents' && <div className="grid gap-4 md:grid-cols-2">{continents.map((continent) => { const items = (leagues.data ?? []).filter((item: any) => continent.countries.includes(item.country)); return <button type="button" key={continent.id} onClick={() => setSection('overview')} className="card-surface match-row rounded-xl p-5 text-left"><div className="mb-5 flex items-start justify-between"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[hsl(var(--primary)/.1)] text-[hsl(var(--primary))]"><Globe2 size={19} /></span><span className="label-mono text-[hsl(var(--muted-foreground))]">{items.length} competitions</span></div><p className="display-font text-2xl font-bold">{continent.label}</p><p className="mt-1 text-sm text-[hsl(var(--muted-foreground))]">{continent.detail}</p><div className="mt-5 flex flex-wrap gap-1.5">{items.slice(0, 6).map((item: any) => <span key={item.id} className="rounded-full border border-[hsl(var(--border))] px-2.5 py-1 font-mono text-[10px] text-[hsl(var(--muted-foreground))]">{item.shortName}</span>)}{items.length > 6 && <span className="rounded-full bg-[hsl(var(--muted))] px-2.5 py-1 font-mono text-[10px] text-[hsl(var(--muted-foreground))]">+{items.length - 6} more</span>}</div></button>; })}</div>}
-      {section === 'teams' && <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{(teams.data ?? []).map((item: any) => <div key={item.id} className="card-surface rounded-xl p-5"><div className="flex items-start justify-between"><div><p className="display-font text-lg font-bold">{item.name}</p><p className="mt-1 text-xs text-[hsl(var(--muted-foreground))]">{item.leagueName}</p></div><span className="font-mono text-2xl font-bold text-[hsl(var(--primary))]">#{item.position}</span></div><div className="mt-5 flex items-center justify-between"><span className="label-mono text-[hsl(var(--muted-foreground))]">Recent form</span><div className="flex gap-1.5">{item.form.map((result: string, index: number) => <span key={`${item.id}-${index}`} className={`flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold ${result === 'W' ? 'bg-[hsl(var(--primary)/.13)] text-[hsl(var(--primary))]' : result === 'D' ? 'bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))]' : 'bg-[hsl(var(--accent)/.13)] text-[hsl(var(--accent))]'}`}>{result}</span>)}</div></div></div>)}</div>}
+      {section === 'teams' && <TeamDirectory key={league} teams={teams.data ?? []} leagueName={leagues.data?.find((item) => item.id === league)?.name} isLoading={teams.isLoading} isError={teams.isError} retry={() => { void teams.refetch(); }} />}
       {section === 'players' && <div className="card-surface overflow-hidden rounded-xl"><div className="hidden grid-cols-[1fr_120px_90px_90px_90px] gap-4 border-b border-[hsl(var(--border))] px-5 py-3 label-mono text-[hsl(var(--muted-foreground))] sm:grid"><span>Player</span><span>League</span><span>Apps</span><span>Goals</span><span>Rating</span></div>{(players.data ?? []).map((item: any) => <div key={item.id} className="grid gap-3 border-b border-[hsl(var(--border))] px-5 py-4 last:border-0 sm:grid-cols-[1fr_120px_90px_90px_90px] sm:items-center sm:gap-4"><div className="flex items-center gap-3"><span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[hsl(var(--primary)/.1)] text-[hsl(var(--primary))]"><Users size={16} /></span><div><p className="font-bold">{item.name}</p><p className="text-xs text-[hsl(var(--muted-foreground))]">{item.teamName} · {item.position}</p></div></div><span className="text-xs text-[hsl(var(--muted-foreground))] sm:text-sm">{item.leagueName}</span><span className="text-xs font-semibold sm:text-sm">{item.appearances} apps</span><span className="text-xs font-semibold sm:text-sm">{item.goals} goals</span><span className="font-mono text-sm text-[hsl(var(--primary))]">{item.rating.toFixed(1)}</span></div>)}</div>}
       {section === 'live' && <div className="space-y-3">{(liveMatches.data ?? []).map((item: any) => <MatchRow key={item.id} match={item} onAlert={() => undefined} />)}{!liveMatches.data?.length && <EmptyState title="No live games right now" detail="When a match starts, it will appear here with its score and minute." />}</div>}
     </div>

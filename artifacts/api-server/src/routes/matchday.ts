@@ -22,6 +22,7 @@ import {
   ListMatchesResponse,
 } from "@workspace/api-zod";
 import { premierLeagueSnapshot } from "../data/premier-league-snapshot.js";
+import { soccerTeamSnapshots } from "../data/soccer-team-snapshots.js";
 
 const router: IRouter = Router();
 
@@ -122,13 +123,26 @@ const matches: Match[] = [
 ];
 
 const soccerTeams = [
-  ...premierLeagueSnapshot.teams,
-  { id: "bayern", name: "Bayern Munich", shortName: "Bayern", leagueId: "bundesliga", leagueName: "Bundesliga", country: "Germany", position: 1, form: ["W", "W", "W", "D", "W"] },
-  { id: "dortmund", name: "Dortmund", shortName: "Dortmund", leagueId: "bundesliga", leagueName: "Bundesliga", country: "Germany", position: 3, form: ["W", "D", "W", "W", "L"] },
-  { id: "barcelona", name: "Barcelona", shortName: "Barcelona", leagueId: "la-liga", leagueName: "La Liga", country: "Spain", position: 1, form: ["W", "W", "W", "W", "D"] },
-  { id: "inter", name: "Inter", shortName: "Inter", leagueId: "serie-a", leagueName: "Serie A", country: "Italy", position: 1, form: ["W", "W", "D", "W", "W"] },
-  { id: "lafc", name: "Los Angeles FC", shortName: "LAFC", leagueId: "mls", leagueName: "Major League Soccer", country: "United States", position: 2, form: ["W", "L", "W", "W", "D"] },
-  { id: "flamengo", name: "Flamengo", shortName: "Flamengo", leagueId: "brasileirao", leagueName: "Brasileirão", country: "Brazil", position: 1, form: ["W", "W", "W", "D", "W"] },
+  ...premierLeagueSnapshot.teams.map((item) => ({
+    ...item,
+    snapshotSeason: premierLeagueSnapshot.season,
+    snapshotDate: premierLeagueSnapshot.asOf,
+    snapshotSource: premierLeagueSnapshot.source,
+  })),
+  ...Object.entries(soccerTeamSnapshots).flatMap(([leagueId, snapshot]) => {
+    const league = leagues.find((item) => item.id === leagueId);
+    if (!league) throw new Error(`Unknown competition in team snapshot: ${leagueId}`);
+    return snapshot.teams.map((item) => ({
+      ...item,
+      id: `${leagueId}-${item.id}`,
+      leagueId,
+      leagueName: league.name,
+      country: league.country,
+      snapshotSeason: snapshot.season,
+      snapshotDate: snapshot.asOf,
+      snapshotSource: snapshot.source,
+    }));
+  }),
 ];
 
 const playerStats = [

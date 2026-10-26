@@ -167,9 +167,12 @@ export const ListSoccerTeamsResponseItem = zod.object({
   "leagueId": zod.string(),
   "leagueName": zod.string(),
   "country": zod.string(),
-  "position": zod.number().int(),
-  "form": zod.array(zod.enum(['W', 'D', 'L'])),
-  "badgeUrl": zod.string().url().optional()
+  "position": zod.number().int().optional(),
+  "form": zod.array(zod.enum(['W', 'D', 'L'])).optional(),
+  "badgeUrl": zod.string().url().optional(),
+  "snapshotSeason": zod.string().optional(),
+  "snapshotDate": zod.string().optional().describe('Date the competition team list was captured, in YYYY-MM-DD format.'),
+  "snapshotSource": zod.string().optional()
 })
 export const ListSoccerTeamsResponse = zod.array(ListSoccerTeamsResponseItem)
 

@@ -1,1 +1,2 @@
 - [Generated client typing](api-client-dom-iterable.md) — include `dom.iterable` when the generated fetch client uses `Headers.entries()`.
+- [Sports data sourcing](sports-data-sourcing.md) — dated team snapshots are approved; public sports feeds have roster and crest coverage gaps.

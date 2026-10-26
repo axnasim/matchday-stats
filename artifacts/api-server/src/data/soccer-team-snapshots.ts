@@ -1,6 +1,6 @@
 // Dated team rosters and badge URLs captured on 2026-10-25.
-// ESPN supplies current competition team lists for 20 entries; K League 1 uses its 2026 team list.
-// Euro and Copa América are the latest completed editions in this snapshot.
+// Euro and Copa América use 2024; AFCON uses its 2025 edition.
+// Missing provider badges are deliberately omitted, not replaced with invented club marks.
 export const soccerTeamSnapshots = {
   "serie-a": {
     "season": "2026",
@@ -3047,17 +3047,20 @@ export const soccerTeamSnapshots = {
       {
         "id": "132909",
         "name": "Aigle Noir Makamba",
-        "shortName": "AN Makamba"
+        "shortName": "AN Makamba",
+        "badgeUrl": "https://r2.thesportsdb.com/images/media/team/badge/hpyq9k1776899745.png"
       },
       {
         "id": "132931",
         "name": "Aiglons FC",
-        "shortName": "Aiglons"
+        "shortName": "Aiglons",
+        "badgeUrl": "https://r2.thesportsdb.com/images/media/team/badge/d0utjq1786249184.png"
       },
       {
         "id": "18832",
         "name": "Al Hilal Omdurman",
-        "shortName": "Omdurman"
+        "shortName": "Omdurman",
+        "badgeUrl": "https://r2.thesportsdb.com/images/media/team/badge/b3sks31787610209.png"
       },
       {
         "id": "18831",
@@ -3067,32 +3070,38 @@ export const soccerTeamSnapshots = {
       {
         "id": "133222",
         "name": "Asswehly SC",
-        "shortName": "Asswehly"
+        "shortName": "Asswehly",
+        "badgeUrl": "https://www.thesportsdb.com/images/media/team/badge/d1k2iq1792726258.png"
       },
       {
         "id": "133219",
         "name": "CFFA",
-        "shortName": "CFFA"
+        "shortName": "CFFA",
+        "badgeUrl": "https://r2.thesportsdb.com/images/media/team/badge/ap4tf61786250966.png"
       },
       {
         "id": "132933",
         "name": "Canchungo",
-        "shortName": "Canchungo"
+        "shortName": "Canchungo",
+        "badgeUrl": "https://r2.thesportsdb.com/images/media/team/badge/bizzda1786250191.png"
       },
       {
         "id": "18816",
         "name": "Club Africain",
-        "shortName": "C. Africain"
+        "shortName": "C. Africain",
+        "badgeUrl": "https://r2.thesportsdb.com/images/media/team/badge/2gijg71753933998.png"
       },
       {
         "id": "132911",
         "name": "Colombe Sportiv Du Dja Et Lobo",
-        "shortName": "Colombe"
+        "shortName": "Colombe",
+        "badgeUrl": "https://r2.thesportsdb.com/images/media/team/badge/l8ph1z1776727063.png"
       },
       {
         "id": "19220",
         "name": "Djoliba",
-        "shortName": "Djoliba"
+        "shortName": "Djoliba",
+        "badgeUrl": "https://r2.thesportsdb.com/images/media/team/badge/fjw4cg1764470742.png"
       },
       {
         "id": "133215",
@@ -3226,7 +3235,8 @@ export const soccerTeamSnapshots = {
       {
         "id": "20220",
         "name": "Pyramids FC",
-        "shortName": "Pyramids FC"
+        "shortName": "Pyramids FC",
+        "badgeUrl": "https://r2.thesportsdb.com/images/media/team/badge/8liy611607352549.png"
       },
       {
         "id": "19221",
@@ -3282,7 +3292,8 @@ export const soccerTeamSnapshots = {
       {
         "id": "10674",
         "name": "TP Mazembe",
-        "shortName": "TP Mazembe"
+        "shortName": "TP Mazembe",
+        "badgeUrl": "https://r2.thesportsdb.com/images/media/team/badge/niib4k1761259428.png"
       },
       {
         "id": "20854",
@@ -3307,7 +3318,8 @@ export const soccerTeamSnapshots = {
       {
         "id": "19223",
         "name": "Young Africans",
-        "shortName": "Young Africans"
+        "shortName": "Young Africans",
+        "badgeUrl": "https://r2.thesportsdb.com/images/media/team/badge/50evgz1673938693.png"
       },
       {
         "id": "8392",

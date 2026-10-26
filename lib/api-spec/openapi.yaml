@@ -409,7 +409,7 @@ components:
             enum: [kickoff, goals, final]
     SoccerTeam:
       type: object
-      required: [id, name, shortName, leagueId, leagueName, country, position, form]
+      required: [id, name, shortName, leagueId, leagueName, country]
       properties:
         id:
           type: string
@@ -433,6 +433,13 @@ components:
         badgeUrl:
           type: string
           format: uri
+        snapshotSeason:
+          type: string
+        snapshotDate:
+          type: string
+          description: Date the competition team list was captured, in YYYY-MM-DD format.
+        snapshotSource:
+          type: string
     SoccerStanding:
       type: object
       required: [rank, teamId, teamName, played, wins, draws, losses, goalsFor, goalsAgainst, goalDifference, points, form, badgeUrl]

@@ -14,7 +14,11 @@ export interface SoccerTeam {
   leagueId: string;
   leagueName: string;
   country: string;
-  position: number;
-  form: SoccerTeamFormItem[];
+  position?: number;
+  form?: SoccerTeamFormItem[];
   badgeUrl?: string;
+  snapshotSeason?: string;
+  /** Date the competition team list was captured, in YYYY-MM-DD format. */
+  snapshotDate?: string;
+  snapshotSource?: string;
 }

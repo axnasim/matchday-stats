@@ -13,5 +13,7 @@ export interface Overview {
   finishedCount: number;
   trackedLeagueCount: number;
   nextMatch: Match | null;
+  /** Date the sample fixture board represents, in YYYY-MM-DD format. */
+  matchdayDate: string;
   lastUpdated: Date;
 }

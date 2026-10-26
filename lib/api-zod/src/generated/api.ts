@@ -100,6 +100,7 @@ export const GetOverviewResponse = zod.object({
   "venue": zod.string(),
   "round": zod.string()
 }).nullable(),
+  "matchdayDate": zod.string().describe('Date the sample fixture board represents, in YYYY-MM-DD format.'),
   "lastUpdated": zod.coerce.date()
 })
 

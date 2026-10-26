@@ -187,10 +187,47 @@ function Dashboard() {
   </div></div>;
 }
 
+const leagueLogoIds: Record<string, number> = {
+  'premier-league': 39,
+  'serie-a': 135,
+  bundesliga: 78,
+  'la-liga': 140,
+  'ligue-1': 61,
+  brasileirao: 71,
+  'liga-portugal': 94,
+  'belgian-pro-league': 144,
+  mls: 253,
+  'saudi-pro-league': 307,
+  'j1-league': 98,
+  'k-league-1': 292,
+  'uefa-champions-league': 2,
+  'uefa-europa-league': 3,
+  'uefa-conference-league': 848,
+  'uefa-super-cup': 531,
+  'fifa-world-cup': 1,
+  'uefa-euro': 4,
+  'copa-america': 9,
+  'uefa-nations-league': 5,
+  'africa-cup-of-nations': 6,
+  'caf-champions-league': 12,
+};
+
+function LeagueLogo({ league, size = 'card' }: { league: any; size?: 'card' | 'chip' }) {
+  const [imageFailed, setImageFailed] = useState(false);
+  const logoId = leagueLogoIds[league.id];
+  const compact = size === 'chip';
+  const dimensions = compact ? 'h-5 w-5' : 'h-10 w-10';
+  return <span className={`inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full ${dimensions} ${compact ? 'bg-white' : 'border border-[hsl(var(--border))] bg-white p-1.5 shadow-sm'}`}>
+    {logoId && !imageFailed
+      ? <img src={`https://media.api-sports.io/football/leagues/${logoId}.png`} alt={`${league.name} logo`} loading="lazy" referrerPolicy="no-referrer" onError={() => setImageFailed(true)} className="h-full w-full object-contain" />
+      : <span aria-label={`${league.name} mark`} className="flex h-full w-full items-center justify-center rounded-full font-mono text-[9px] font-bold text-white" style={{ backgroundColor: league.accent }}>{league.shortName}</span>}
+  </span>;
+}
+
 function LeagueGroup({ title, detail, items }: { title: string; detail: string; items: any[] }) {
   return <section>
     <div className="mb-4"><p className="display-font text-2xl font-bold">{title}</p><p className="mt-1 text-sm text-[hsl(var(--muted-foreground))]">{detail}</p></div>
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{items.map((item: any) => <Link href={`/soccer?league=${item.id}`} key={item.id} className="card-surface match-row rounded-xl p-5"><div className="mb-6 flex items-start justify-between"><span className="flex h-10 w-10 items-center justify-center rounded-xl font-mono text-xs font-bold text-white" style={{ backgroundColor: item.accent }}>{item.shortName}</span><span className="label-mono text-[hsl(var(--muted-foreground))]">{item.country}</span></div><p className="display-font text-xl font-bold">{item.name}</p><p className="mt-1 text-xs text-[hsl(var(--muted-foreground))]">View teams, players, fixtures, and stats</p></Link>)}</div>
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{items.map((item: any) => <Link href={`/soccer?league=${item.id}`} key={item.id} className="card-surface match-row rounded-xl p-5"><div className="flex items-center gap-3"><LeagueLogo league={item} /><div className="min-w-0 flex-1"><p className="display-font text-lg font-bold leading-tight">{item.name}</p><p className="mt-1 label-mono text-[hsl(var(--muted-foreground))]">{item.country}</p></div></div><p className="mt-4 text-xs text-[hsl(var(--muted-foreground))]">View teams, players, fixtures, and stats</p></Link>)}</div>
   </section>;
 }
 
@@ -242,7 +279,7 @@ function SoccerHub() {
        {(section === 'overview' || section === 'live' || section === 'teams' || section === 'players') && <div className="mb-7 flex items-center gap-3 overflow-x-auto pb-1">
         <span className="label-mono shrink-0 text-[hsl(var(--muted-foreground))]">League</span>
         <button type="button" onClick={() => setLeague('all')} className={`shrink-0 rounded-full border px-3 py-2 text-xs font-bold ${league === 'all' ? 'border-[hsl(var(--primary))] bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]' : 'border-[hsl(var(--border))] bg-[hsl(var(--card))] text-[hsl(var(--muted-foreground))]'}`}>All leagues</button>
-        {(leagues.data ?? []).map((item: any) => <button type="button" key={item.id} onClick={() => setLeague(item.id)} className={`flex shrink-0 items-center gap-2 rounded-full border px-3 py-2 text-xs font-bold ${league === item.id ? 'border-[hsl(var(--primary))] bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]' : 'border-[hsl(var(--border))] bg-[hsl(var(--card))] text-[hsl(var(--muted-foreground))]'}`}><span className="h-2 w-2 rounded-full" style={{ backgroundColor: item.accent }} />{item.shortName}</button>)}
+        {(leagues.data ?? []).map((item: any) => <button type="button" key={item.id} onClick={() => setLeague(item.id)} className={`flex shrink-0 items-center gap-2 rounded-full border px-3 py-2 text-xs font-bold ${league === item.id ? 'border-[hsl(var(--primary))] bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]' : 'border-[hsl(var(--border))] bg-[hsl(var(--card))] text-[hsl(var(--muted-foreground))]'}`}><LeagueLogo league={item} size="chip" />{item.shortName}</button>)}
        </div>}
       {section === 'overview' && <div className="space-y-10">
         <LeagueGroup title="Domestic leagues" detail="Follow the regular season competitions in each country." items={domesticLeagues} />
